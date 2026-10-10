@@ -2,6 +2,8 @@
 
 # awesome-looot-use-cases
 
+**[Showcase](https://loootai.github.io/showcase/)**: every repo built on looot in one gallery, with prices.
+
 Copy-paste recipes for what an agent can do with [looot](https://looot.ai). looot gives an agent one token and one prepaid balance for 2,500+ data API endpoints from 90+ providers. The agent searches the catalog, sees the price before it runs, and pays per call. A failed call costs nothing. No subscription, top up from $5.
 
 Each recipe has the job in one sentence, a prompt to paste, and three ways to run it: an MCP client, the CLI and plain REST.
