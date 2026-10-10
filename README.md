@@ -25,6 +25,23 @@ Prices are the cheapest listed endpoint per job in the free public catalog, as o
 | Competitor SERP snapshot | The organic Google results for each query, saved with a date | $0.0009 per query | [recipe](use-cases/competitor-serp-snapshot/README.md) |
 | Research a prospect before a call | A short brief: company facts, the person's role, recent news and what the company's site says | about $0.0043 for the four calls | [recipe](use-cases/research-a-prospect-before-a-call/README.md) |
 
+## Open-source alternatives built on looot
+
+Each repo rebuilds a paid product on one looot key, with a demo mode, a headless CLI and the price shown before every run. A looot-warm-leads repo (Gojiberry) is in progress. No paid looot run was made for any of them yet, so parsers come from docs and fixtures. Costs are list prices from each README.
+
+| Repo | Replaces | What it does | Typical run at list price |
+| --- | --- | --- | --- |
+| [looot-intent](https://github.com/loootai/looot-intent) | 6sense | Scores company domains from ten public signals, with the provider and cost behind each point. | $0.18 per account |
+| [looot-score](https://github.com/loootai/looot-score) | MadKudu | CSV of leads in, grade A to D out, against an ICP you edit. | $0.83 to $1.67 per 100 leads |
+| [looot-reveal](https://github.com/loootai/looot-reveal) | RB2B, Clearbit Reveal | Turns visitor IPs into companies with an ICP flag. Company level only. | about $0.08 per 100 new IPs |
+| [looot-techstack](https://github.com/loootai/looot-techstack) | BuiltWith, Wappalyzer | Website technologies from several providers side by side, plus companies using a technology. | $1.89 per 100 domains |
+| [looot-signals](https://github.com/loootai/looot-signals) | TheirStack, Harmonic | Hiring, funding, news and leadership triggers as a dated feed with an evidence link. | up to $0.53 per run of five triggers |
+| [looot-lookalike](https://github.com/loootai/looot-lookalike) | Ocean.io | 3 to 20 seed domains in, a ranked list of similar companies out. | up to $0.21 for 6 seeds |
+| [looot-ads](https://github.com/loootai/looot-ads) | Foreplay | Competitor ads from the Meta, Google, LinkedIn and TikTok libraries on one board. | about $0.11 for 5 competitors |
+| [looot-reviews](https://github.com/loootai/looot-reviews) | ReviewTrackers | Google Maps, App Store, Google Play and Tripadvisor reviews grouped into themes. | up to $0.015 for 5 companies on Google Maps |
+| [looot-battlecards](https://github.com/loootai/looot-battlecards) | Klue, Crayon | Competitor battlecards with a source link and date on every claim. | $0.076 for 5 competitors |
+| [looot-mentions](https://github.com/loootai/looot-mentions) | Brand24, Mention | Brand and keyword mentions from six sources, with sentiment and a daily digest. | $0.0066 per keyword per run |
+
 ## Quick start
 
 ```bash
