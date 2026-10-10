@@ -1,0 +1,769 @@
+{
+ "serverInfo": {
+  "name": "looot",
+  "source": "llms-full.txt"
+ },
+ "tools": [
+  {
+   "name": "discover",
+   "description": "looot: free search of the data API catalog for up to 5 eligible endpoints by task, capability, category, provider, endpoint, input-schema, output-schema, schema, or hybrid mode (auto infers one). Each result has bounded relevance/evidence/availability/price/freshness components and its category; unknown evidence stays distinct from zero. minimumScore is applied before resultLimit. Identity modes never substitute another endpoint or provider. Never returns a mock endpoint. `detail` changes only how much of each candidate comes back, never ranking or matching: \"full\" (default) is the whole candidate; \"title\" returns rank, endpointId, provider, name, capability, category, estimatedPrice, priceBasis, costPerSuccessUsd, async, works {rate, runs, p50Ms, thin} and sourceCapability, enough to pick one to inspect. `capability` is the job id; `sourceCapability` the raw registered slug. Full candidates carry `credential` (\"platform_own_key_optional\": the platform key runs it, your own key is optional). No endpoint for the named job: candidates is empty and meta.warnings has \"no_supply_for_job: <jobId>: ...\". maxPrice removed every match: meta.warnings has \"price_above_max: <jobId>: ...\" naming the cheapest. For more than 5 results or a whole category, use search_catalog (limit up to 200, category/provider/capability/price filters). This search is lexical: when the job is easier to describe in a sentence and nothing here is a confident match, discover_smart judges a shortlist with one small paid AI call (see its description for the cost). `prefer` (balanced default, cheapest, reliable, fastest; `ranking` is an alias) orders providers inside a job; each full candidate's `facts` says why. Field details: https://api.looot.ai/llms-full.txt.\n\nField details:\n\n`works` is {rate, runs, p50Ms, thin}: the measured success rate, decided runs, p50, and thin when under 5 runs.\nOn a full candidate, eligibility \"byok\" only says your own key is allowed; `credential` says whose key a run uses.\n`facts` lists price per unit, cost per success, success rate with its sample size, p50, async and required inputs.\n`sourceCapability` is the raw slug an endpoint was registered under; `capability` is the job it does (the alias target).",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "mode": {
+      "default": "auto",
+      "type": "string",
+      "enum": [
+       "auto",
+       "task",
+       "capability",
+       "category",
+       "provider",
+       "endpoint",
+       "input-schema",
+       "output-schema",
+       "schema",
+       "hybrid"
+      ]
+     },
+     "ranking": {
+      "type": "string",
+      "enum": [
+       "relevance",
+       "price",
+       "reliability",
+       "community",
+       "balanced"
+      ]
+     },
+     "prefer": {
+      "type": "string",
+      "enum": [
+       "cheapest",
+       "reliable",
+       "fastest",
+       "balanced"
+      ]
+     },
+     "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+     },
+     "capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$"
+     },
+     "category": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "taskDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+     },
+     "provider": {
+      "type": "string",
+      "minLength": 1
+     },
+     "endpointId": {
+      "type": "string",
+      "minLength": 1
+     },
+     "maxPrice": {
+      "type": "number",
+      "minimum": 0
+     },
+     "allowedProviders": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      }
+     },
+     "blockedProviders": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1
+      }
+     },
+     "eligibilities": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "internal-validation",
+        "byok",
+        "partner-required",
+        "prohibited"
+       ]
+      }
+     },
+     "executionModes": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "sync",
+        "async"
+       ]
+      }
+     },
+     "minimumScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "resultLimit": {
+      "default": 5,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+     },
+     "detail": {
+      "default": "full",
+      "type": "string",
+      "enum": [
+       "title",
+       "full"
+      ]
+     },
+     "includeUnavailable": {
+      "type": "boolean"
+     }
+    },
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "discover_smart",
+   "description": "looot: COSTS MONEY (paid search of the data API catalog, takes about 1-2 seconds) -- use `discover` (free, instant) first and only reach for this when a lexical search cannot express the job, e.g. \"find someone's work email from their name and company\" where no endpoint's own text says \"email\". Two stages: (1) the free lexical index narrows the whole catalog to a shortlist; (2) ONE typesafe-choice run (TypeSafe's Jev model, billed per input token: about $0.00005 for a typical shortlist, and a call holds at most about $0.0004 before it settles to real usage) judges that shortlist against your `useCase` and returns the best fit plus a probability for every candidate. `candidates` comes back ranked by Jev's probability, each row carrying `probability` and `lexicalRank` (where the free search had put it). `smart` carries the winning endpointId, Jev's confidence, and the runId/cost of the judging call -- it appears on your normal run history and bill like any other run, charged to this workspace. Where the server has the job-first skip on, a query the free search already resolves to a single job with a clear top endpoint makes no paid call: `smart` comes back with `model: \"job-first\"`, `runId: null`, `costUsd: 0` and `reason: \"single_job_clear_winner\"`, and `candidates` keep the free order. If TypeSafe fails, times out, or answers unusably, this NEVER errors: it returns the plain lexical shortlist with `smart: null` and `degraded: { reason, detail }`, so you always get an answer. When the free search finds nothing, no paid call is made: `degraded.reason` is \"no_supply_for_job\" when no endpoint does the job the use case names (with search_catalog's `warnings` and `unsuppliedJobs`), else \"no_candidates\" (with `priceHint` when a price filter removed every match). A timed-out judging run is cancelled; it is still billed if it had already reached the provider. Follow up with inspect/run on the chosen endpointId exactly as you would after `discover`.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "useCase": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+     },
+     "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+     },
+     "candidateLimit": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 20
+     },
+     "filters": {
+      "type": "object",
+      "properties": {
+       "category": {
+        "type": "string"
+       },
+       "platform": {
+        "type": "string"
+       },
+       "provider": {
+        "type": "string"
+       },
+       "capability": {
+        "type": "string"
+       },
+       "keyless": {
+        "type": "boolean"
+       },
+       "verified": {
+        "type": "boolean"
+       },
+       "mock": {
+        "type": "boolean"
+       },
+       "maxPriceMicros": {
+        "type": "number",
+        "minimum": 0
+       },
+       "hidden": {
+        "type": "boolean"
+       },
+       "includeUnavailable": {
+        "type": "boolean"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "required": [
+     "useCase"
+    ],
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "inspect",
+   "description": "looot: inspect a data API endpoint (free). Return the exact input/output schema, price formula, estimated max cost and provider identity for one endpoint before running it. A run needs prepaid credit at least equal to the estimated max cost. When the endpoint has a stored output format, `outputFormat` carries it with `provenance.verified` (false means an expected shape not yet checked against real answers) and a one-line `note`. `endpoint.capability` is the job id the endpoint does (the alias target), `endpoint.sourceCapability` the raw slug, and `endpoint.credential` whose key a run uses (\"platform_own_key_optional\": the platform key runs it, your own key is optional). Also accepts a workflow id directly (CA-WF-02/08), returning that workflow's own current snapshot instead. `detail` \"run\" returns only what a run needs: endpoint identity, job, mode, price and credential, estimatedMaxCost, requiredInputFields, inputSchema, outputFormat (or outputSummary) and a `run` template (replace its <placeholders> and send a new `idempotencyKey` per run), without usageHints' REST and CLI examples. The default \"full\" is unchanged.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "endpointId": {
+      "type": "string"
+     },
+     "detail": {
+      "type": "string",
+      "enum": [
+       "full",
+       "run"
+      ]
+     }
+    },
+    "required": [
+     "endpointId"
+    ],
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "run",
+   "description": "looot: run a data API endpoint (paid). Spends prepaid credit; a new workspace starts with none. Validates input, checks the workspace budget, reserves the estimated max cost, runs or queues the endpoint. Some endpoints act on your connected accounts and can send or change things there. Idempotent on idempotencyKey: a reused key returns the SAME run (even in flight) with replayed:true, never a second charge. Out of credits is a tool error (status \"blocked\", error.code \"insufficient_balance\") whose payload carries error.message, topUp.checkoutUrl and topUp.dashboardUrl; a run after payment needs a NEW idempotencyKey. A successful call can still carry status:\"failed\" (unknown endpointId, input failing the endpoint's schema), with `error` (code, message, retryable, retryHint). endpointId \"workflow:<id>\" starts that workflow with this idempotencyKey and returns a workflowRunId. endpointId: \"job:<job id>\" (the job.id on a search row, e.g. job:people.email.find) runs the job: looot picks the first provider in fallback.prefer order (default balanced) that this workspace can run now and whose schema accepts your input; the run's endpointId is that provider and `requestedJob` says which job and why. With `fallback`, the job's other providers follow in the same order. `wait` (seconds, default 20, max 60): returns the settled run inline if it finishes in time, else the queued or running run. wait: 0 returns at once. `fallback` (true, or {maxAttempts, maxCostUsd, prefer, exclude, stopAtFirstMiss}): on a miss or error, tries the next provider of the same job within ONE hold; only attempts that ran are charged (a site refusal too); a site 404/410 ends the walk; the result carries `route`. Every run carries `outcome` (hit|weak|miss|error|rejected|skipped|pending); a completed run can carry `normalized` next to `result`. Field details: https://api.looot.ai/llms-full.txt.\n\nField details:\n\nThe run evaluates the workspace budget before it reserves the estimated max cost. Retries never double-charge.\n`error` on a failed run: { code, providerStatus, message, requestId, whoseError: \"provider\"|\"gateway\"|\"customer\", retryable, retryHint }, never secrets or raw provider headers.\nOut of credits: `topUp.checkoutUrl` is Stripe's hosted payment page for the suggested amount, never below topUp.minimumUsd; `topUp.dashboardUrl` is the usage page. error.message is the one sentence to show the customer and links topUp.dashboardUrl.\n`route` (with `fallback`): servedBy, attempts with outcome and reason, skipped, and summary.\n`wait` returns the settled run in the same shape runs_get does. Some endpoints act on your own connected accounts (access \"needs_your_account\" on a search_catalog row).\n`normalized` is the same block runs_get and GET /v1/runs/{id} return.\nA result with `media` is a file. With signed download links on, media.downloadUrl (and downloadUrlExpiresAt) downloads it with plain curl, no token; when it expired, call media_link with the runId.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "endpointId": {
+      "type": "string"
+     },
+     "input": {
+      "type": "object",
+      "propertyNames": {
+       "type": "string"
+      },
+      "additionalProperties": {}
+     },
+     "idempotencyKey": {
+      "type": "string"
+     },
+     "output": {
+      "oneOf": [
+       {
+        "type": "object",
+        "properties": {
+         "mode": {
+          "type": "string",
+          "const": "raw"
+         }
+        },
+        "required": [
+         "mode"
+        ],
+        "additionalProperties": false
+       },
+       {
+        "type": "object",
+        "properties": {
+         "mode": {
+          "type": "string",
+          "const": "custom"
+         },
+         "mappingId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+         },
+         "version": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+         }
+        },
+        "required": [
+         "mode",
+         "mappingId"
+        ],
+        "additionalProperties": false
+       }
+      ]
+     },
+     "fallback": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "object",
+        "properties": {
+         "enabled": {
+          "type": "boolean"
+         },
+         "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+         },
+         "maxCostUsd": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+         },
+         "prefer": {
+          "type": "string",
+          "enum": [
+           "cheapest",
+           "reliable",
+           "fastest",
+           "balanced"
+          ]
+         },
+         "exclude": {
+          "maxItems": 50,
+          "type": "array",
+          "items": {
+           "type": "string",
+           "minLength": 1,
+           "maxLength": 200
+          }
+         },
+         "stopAtFirstMiss": {
+          "type": "boolean"
+         }
+        },
+        "additionalProperties": false
+       }
+      ]
+     },
+     "wait": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 60
+     }
+    },
+    "required": [
+     "endpointId",
+     "input",
+     "idempotencyKey"
+    ],
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "runs_get",
+   "description": "looot: get a run's lifecycle status separately from the provider's own response status, plus result and cost once settled. On a failed run, `error` carries { code, providerStatus, message, requestId, whoseError: \"provider\"|\"gateway\"|\"customer\", retryable, retryHint } -- never secrets or raw provider headers. Also follows a workflow run started via run() with endpointId \"workflow:<id>\" (CA-WF-02/CA-WF-08), by its returned workflowRunId. A completed run can carry an optional `normalized` object next to `result` (fixed field names per job, the same block GET /v1/runs/{id} returns); absent when it does not apply. A result with `media` is a file, and media.downloadUrl is its download link.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "runId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "runId"
+    ]
+   }
+  },
+  {
+   "name": "media_link",
+   "description": "looot: get a short-lived download link for a file a run produced (audio, image, video, PDF). Download it with curl or fetch within 15 minutes; call again for a new link. Pass the runId (and mediaId when the run has several files; the error lists them). The answer carries downloadUrl (no token needed), downloadUrlExpiresAt, contentType, byteLength, sha256 to check the download, and a filename suggestion. Download the file, do not paste it into the chat, and keep the link out of logs and shared documents. Pass inline:true for a png, jpeg, gif or webp image under 200 KB to also see it in the answer. Errors: run_not_found, media_not_found, media_expired, media_id_required, media_links_disabled.\n\nField details:\n\nInput: runId, mediaId (optional when the run has one file), inline (optional, png/jpeg/gif/webp up to 200 KB raw, returned as an image block next to the link; audio, video and PDF are never inline).\nOutput: runId, mediaId, contentType, byteLength, sha256, expiresAt (when the stored file is deleted), downloadUrl, downloadUrlExpiresAt (15 minutes from the call, never after expiresAt), downloadPath (needs a token), filename.\nCheck the download with the sha256. runs_list rows never carry downloadUrl.\nErrors: run_not_found (also another workspace's run), media_not_found, media_expired, media_id_required (the error lists mediaIds), media_links_disabled.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "runId": {
+      "type": "string"
+     },
+     "mediaId": {
+      "type": "string"
+     },
+     "inline": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "runId"
+    ]
+   }
+  },
+  {
+   "name": "runs_list",
+   "description": "looot: list runs: a cursor-paginated run history filtered by workspace, status, or capability. Each row is a bounded summary -- runId, endpointId, providerId, status, providerResponseStatus, createdAt, completedAt, actualCost, error (same shape as run/runs_get), resultBytes, and servedEndpointId/servedProviderId (the endpoint and provider that answered; absent when none did) -- never the full result payload unless includeResult:true, which returns full run records.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string",
+      "enum": [
+       "queued",
+       "running",
+       "completed",
+       "failed",
+       "blocked",
+       "stopped",
+       "reconciliation_pending",
+       "pending_provider"
+      ]
+     },
+     "capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$"
+     },
+     "limit": {
+      "default": 20,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+     },
+     "cursor": {
+      "type": "string"
+     },
+     "includeResult": {
+      "type": "boolean"
+     }
+    },
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "runs_cancel",
+   "description": "looot: cancel a queued or running run -- same as POST /v1/runs/{id}/cancel. Returns the run's current state either way (already-settled runs are returned unchanged, never an error).",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "runId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "runId"
+    ]
+   }
+  },
+  {
+   "name": "runs_evidence",
+   "description": "looot: get every attempt made for a run, summarised: status, the provider's own response status, latency in ms, the receipt id, and cost -- same data as GET /v1/runs/{id}/attempts, never raw provider headers or bodies.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "runId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "runId"
+    ]
+   }
+  },
+  {
+   "name": "balance",
+   "description": "looot: check the balance: available and reserved balance for a workspace. topUpLink always carries this gateway's minimum top-up (minimumUsd) and dashboardUrl (the usage page with the top-up form); the minimum is a purchase minimum, not a required wallet balance. balance_sufficient means positive funds, not that a given run is affordable; a run's estimated total cost is the figure to compare with the available balance. An already-pending Stripe Checkout session may be returned at any balance (reading the balance never opens one). This tool reads only and opens no payment session.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {}
+   }
+  },
+  {
+   "name": "top_up",
+   "description": "looot: top up credits: open a Stripe-hosted Checkout page to add prepaid credits to this workspace and return its URL for the customer to pay on (the agent never enters card details). amountUsd is optional: omitted, it is the suggested amount (at least this gateway's minimum, the minimumUsd that balance reports; more when the balance is negative). Below the minimum is refused with the minimum in the error. The same amount within 10 minutes returns the same pending session; at most 3 new sessions per hour. When a session cannot be opened (billing off, a read-only token, the operator workspace) the result carries checkoutUrl: null, a reason, and dashboardUrl where a human can top up instead.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "amountUsd": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1000000
+     }
+    }
+   }
+  },
+  {
+   "name": "search",
+   "description": "looot: free search of the data API catalog's search endpoints by job. Describe the task in plain words (\"verify an email\", \"backlinks for a domain\"), or pass filters (filters.capability takes a job id from catalog_overview); query is optional when a filter is set. Each row has endpointId, provider, capability (the job id), estimatedPrice, priceBasis, costPerSuccessUsd (price / works.rate; thin rows fill missing runs at the job average, which cheapest sorts on), works {rate, runs, p50Ms, thin}, access, async and credential. `prefer` (balanced default, cheapest, reliable, fastest) orders providers inside a job. When no endpoint does the job, items is empty and warnings names the job: tell the user, or call capability_request. When filters.maxPriceMicros removes every match, priceHint names the cheapest one. 10 rows by default; limit up to 200, then offset and nextOffset. detail \"full\" adds summary, stats, facts and fees. No confident match for a job you can describe in a sentence? discover_smart ranks one for a small fee. Next: inspect the endpointId you pick.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string",
+      "maxLength": 500
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200
+     },
+     "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+     },
+     "detail": {
+      "type": "string",
+      "enum": [
+       "title",
+       "full"
+      ]
+     },
+     "prefer": {
+      "type": "string",
+      "enum": [
+       "cheapest",
+       "reliable",
+       "fastest",
+       "balanced"
+      ]
+     },
+     "filters": {
+      "type": "object",
+      "properties": {
+       "category": {
+        "type": "string"
+       },
+       "platform": {
+        "type": "string"
+       },
+       "provider": {
+        "type": "string"
+       },
+       "capability": {
+        "type": "string"
+       },
+       "keyless": {
+        "type": "boolean"
+       },
+       "verified": {
+        "type": "boolean"
+       },
+       "mock": {
+        "type": "boolean"
+       },
+       "maxPriceMicros": {
+        "type": "number",
+        "minimum": 0
+       },
+       "hidden": {
+        "type": "boolean"
+       },
+       "includeUnavailable": {
+        "type": "boolean"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "search_catalog",
+   "description": "looot: free ranked full-text search of the data API catalog, with job expansion: a query matching a job's title or alias (\"verify an email\") returns every endpoint of that job across providers, and an unmatched sentence falls back to looser word overlap. Each item carries `category`, `job` (id, title), `matchedBy` (text|capability|tokens), `mock` (a demo provider, ranked last), `verified`, `keyless`, `runnableNow`, `stats` (30-day calls/successRate/p50Ms/sampleSize, empty answers count as success, null without evidence) and `access`: \"runs_now\" (keyless or a platform key exists), \"needs_your_account\" (connect your own account first) or \"coming_soon\" (cannot run yet: no platform key). `capability` is the job id, `sourceCapability` the raw registered slug, `works` {rate, runs, p50Ms, thin} (thin rows fill missing runs at the job average, which cheapest sorts on), `credential` whose key a run uses. `expandedCapabilities` lists matched job ids; pass one as `filters.capability`. When no endpoint does the named job (\"weather\"), `items` is empty, `unsuppliedJobs` names it and `warnings` has code \"no_supply_for_job\". If `filters.maxPriceMicros` removes every match, `priceHint` (code \"price_above_max\") names the cheapest. `detail: \"title\"` is a cheap first pass, same rows in the same order: endpointId, provider, name, capability, category, estimatedPrice, priceBasis, access, costPerSuccessUsd and async, plus works, sourceCapability and credential. `limit` caps a page at 200; page with `offset` and `nextOffset` (null at the end). `query` is optional with a filter: `filters: { category: \"...\" }` browses a category. Find the job here, then discover/inspect/run an endpoint. `prefer` (balanced default, cheapest, reliable, fastest) orders providers inside a job; `facts` on each full row says why. Field details: https://api.looot.ai/llms-full.txt.\n\nField details:\n\n`runnableNow` is true when the endpoint is usable right now with zero setup.\n`mock` rows rank last unless `filters.mock` is true.\nA `warnings` entry is { code, jobId, jobTitle, message }. With `priceHint`, `items` is empty.\n`access`: \"runs_now\" means keyless or a platform key exists; \"needs_your_account\" means the endpoint acts on your own account (Instantly, Gmail, LinkedIn, Meta Ads); \"coming_soon\" is a real provider with no platform key yet.\n`expandedCapabilities` lists only jobs with at least one endpoint in the catalog; passing one as `filters.capability` returns its endpoints, subject to your other filters. A job name in the query surfaces its endpoints even when their own name and description do not contain the query.\n`detail: \"title\"` rows have no summary, stats, job, matchedBy or fee breakdown. Re-run without it, or call inspect, once you have narrowed down.\n`capability` equals job.id (the alias target); `sourceCapability` is the raw slug it was registered under.\n`works` is {rate, runs, p50Ms, thin}: the useful-answer rate costPerSuccessUsd divides by, decided runs, p50, and thin under 5 runs.\n`credential` \"platform_own_key_optional\": the platform key runs it and your own key is optional, which is what eligibility \"byok\" means when a platform key exists.\n`priceHint` fields: { code: \"price_above_max\", jobId, jobTitle, endpointId, estimatedPrice, priceBasis, message }. It replaces cheaper rows about something else.\n`unsuppliedJobs` and `warnings` appear only when non-empty. The biggest category holds several thousand endpoints, so page with `offset`.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string",
+      "maxLength": 500
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200
+     },
+     "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+     },
+     "detail": {
+      "type": "string",
+      "enum": [
+       "title",
+       "full"
+      ]
+     },
+     "prefer": {
+      "type": "string",
+      "enum": [
+       "cheapest",
+       "reliable",
+       "fastest",
+       "balanced"
+      ]
+     },
+     "filters": {
+      "type": "object",
+      "properties": {
+       "category": {
+        "type": "string"
+       },
+       "platform": {
+        "type": "string"
+       },
+       "provider": {
+        "type": "string"
+       },
+       "capability": {
+        "type": "string"
+       },
+       "keyless": {
+        "type": "boolean"
+       },
+       "verified": {
+        "type": "boolean"
+       },
+       "mock": {
+        "type": "boolean"
+       },
+       "maxPriceMicros": {
+        "type": "number",
+        "minimum": 0
+       },
+       "hidden": {
+        "type": "boolean"
+       },
+       "includeUnavailable": {
+        "type": "boolean"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "catalog_overview",
+   "description": "looot: free overview of the data API catalog: what exists, as categories > platforms > jobs, with counts at every level: providerCount (distinct providers), endpointCount, runnableCount (runnable without your own key: keyless or a platform key exists), cheapestPerCall and cheapestPerResult (lowest price in dollars, the price you pay, null when nothing is priced that way; the two are never compared). Same body as GET /v1/catalog/overview with the same arguments. No arguments: depth summary (totals plus one line per category, a few KB). depth platforms adds each category's platforms, jobs adds each platform's jobs, full is the whole document (large). category or platform answers only that branch (default depth platforms; pass depth jobs for its jobs, which can be hundreds of KB for a big branch such as \"other\", so prefer topic) and then has no totals. topic (e.g. \"email\", \"phone\") answers the matching jobs, at most 25, with truncated when there are more. Unknown ids answer unknown_category or unknown_platform. Follow up with search_catalog or discover to pick an endpoint for a job.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "depth": {
+      "description": "One of summary, platforms, jobs, full. Default summary, or platforms when category or platform is given (pass jobs to list the jobs). Not with topic.",
+      "type": "string"
+     },
+     "category": {
+      "description": "A category id (from the summary). Answers only that category.",
+      "type": "string"
+     },
+     "platform": {
+      "description": "A platform id (from depth platforms). Answers only that platform, inside its category.",
+      "type": "string"
+     },
+     "topic": {
+      "description": "Words such as \"email\" or \"phone number\". Answers the matching jobs (at most 25) with their counts.",
+      "type": "string"
+     }
+    },
+    "additionalProperties": {}
+   }
+  },
+  {
+   "name": "capability_request",
+   "description": "looot: request a provider or job the data API catalog does not cover yet -- same as POST /v1/capability-requests. title and description are yours; desiredInputs/desiredOutputs are optional field lists the endpoint should take/return. idempotencyKey (yours, stable per request) makes a retry a no-op instead of a duplicate ask.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+     },
+     "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+     },
+     "desiredInputs": {
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 200
+      }
+     },
+     "desiredOutputs": {
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 200
+      }
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+     }
+    },
+    "required": [
+     "title",
+     "description",
+     "idempotencyKey"
+    ]
+   }
+  },
+  {
+   "name": "feedback",
+   "description": "looot: tell the looot team what went wrong or what would help -- free, never charged, same as POST /v1/feedback and `looot feedback`. Call it when a run returned a wrong, empty or oversized answer, when docs or an error message were unclear, when a provider or job you needed is missing (kind \"idea\"), or when something worked well (kind \"praise\"). kind: bug, idea, praise or question. message: what you did, what you expected and what happened, up to 4000 characters; do not include secrets or customer personal data. runId and endpointId are optional and make a report much easier to act on (a runId outside this workspace is ignored). rating 1 to 5 is optional. A workspace may send 20 a day; at the limit you get feedback_rate_limited, so put the most important points into one message. Returns { feedbackId, status: \"new\" }.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "bug",
+       "idea",
+       "praise",
+       "question"
+      ]
+     },
+     "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+     },
+     "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$"
+     },
+     "endpointId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$"
+     },
+     "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+     }
+    },
+    "required": [
+     "kind",
+     "message"
+    ]
+   }
+  },
+  {
+   "name": "my_tools",
+   "description": "looot: list the tenant tools this workspace may run -- id, name, description, and whether it is callable right now (a published, non-revoked tool). Same data as GET /v1/tenant-tools.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {}
+   }
+  }
+ ]
+}

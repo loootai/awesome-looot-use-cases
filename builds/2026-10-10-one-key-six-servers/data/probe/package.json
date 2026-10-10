@@ -1,0 +1,19 @@
+{
+  "name": "probe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@brave/brave-search-mcp-server": "2.1.4",
+    "firecrawl-mcp": "3.27.3",
+    "serper-search-scrape-mcp-server": "0.1.2",
+    "tavily-mcp": "0.2.22"
+  }
+}

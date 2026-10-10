@@ -1,0 +1,396 @@
+{
+ "servers": [
+  {
+   "key": "firecrawl",
+   "label": "Firecrawl",
+   "config_lines": 14,
+   "keys": 1,
+   "config": {
+    "command": "npx",
+    "args": [
+     "-y",
+     "firecrawl-mcp@3.27.3"
+    ],
+    "env": {
+     "FIRECRAWL_API_KEY": "<key>"
+    }
+   },
+   "tools": 27,
+   "chars": 94167,
+   "tokens_est": 23542,
+   "version": "3.27.3",
+   "per_tool": [
+    [
+     "firecrawl_scrape",
+     11256
+    ],
+    [
+     "firecrawl_search",
+     9397
+    ],
+    [
+     "firecrawl_agent",
+     7222
+    ],
+    [
+     "firecrawl_feedback",
+     6099
+    ],
+    [
+     "firecrawl_crawl",
+     5501
+    ],
+    [
+     "firecrawl_parse",
+     5188
+    ],
+    [
+     "firecrawl_find_tools",
+     5105
+    ],
+    [
+     "firecrawl_interact",
+     5024
+    ],
+    [
+     "firecrawl_agent_status",
+     4190
+    ],
+    [
+     "firecrawl_search_feedback",
+     4028
+    ],
+    [
+     "firecrawl_research_search_papers",
+     3118
+    ],
+    [
+     "firecrawl_research_related_papers",
+     2760
+    ],
+    [
+     "firecrawl_credit_usage",
+     2681
+    ],
+    [
+     "firecrawl_monitor_create",
+     2226
+    ],
+    [
+     "firecrawl_research_inspect_paper",
+     2176
+    ],
+    [
+     "firecrawl_developer_search",
+     2142
+    ],
+    [
+     "firecrawl_check_crawl_status",
+     2117
+    ],
+    [
+     "firecrawl_map",
+     1966
+    ],
+    [
+     "firecrawl_monitor_check",
+     1963
+    ],
+    [
+     "firecrawl_research_read_paper",
+     1567
+    ],
+    [
+     "firecrawl_monitor_checks",
+     1422
+    ],
+    [
+     "firecrawl_monitor_update",
+     1284
+    ],
+    [
+     "firecrawl_monitor_list",
+     1248
+    ],
+    [
+     "firecrawl_interact_stop",
+     1247
+    ],
+    [
+     "firecrawl_monitor_run",
+     1086
+    ],
+    [
+     "firecrawl_monitor_delete",
+     1064
+    ],
+    [
+     "firecrawl_monitor_get",
+     1062
+    ]
+   ]
+  },
+  {
+   "key": "tavily",
+   "label": "Tavily",
+   "config_lines": 14,
+   "keys": 1,
+   "config": {
+    "command": "npx",
+    "args": [
+     "-y",
+     "tavily-mcp@0.2.22"
+    ],
+    "env": {
+     "TAVILY_API_KEY": "<key>"
+    }
+   },
+   "tools": 5,
+   "chars": 7694,
+   "tokens_est": 1924,
+   "version": "0.2.22",
+   "per_tool": [
+    [
+     "tavily_search",
+     2891
+    ],
+    [
+     "tavily_crawl",
+     1935
+    ],
+    [
+     "tavily_map",
+     1275
+    ],
+    [
+     "tavily_extract",
+     835
+    ],
+    [
+     "tavily_research",
+     752
+    ]
+   ]
+  },
+  {
+   "key": "exa",
+   "label": "Exa",
+   "config_lines": 8,
+   "keys": 0,
+   "config": {
+    "type": "http",
+    "url": "https://mcp.exa.ai/mcp"
+   },
+   "tools": 2,
+   "chars": 2377,
+   "tokens_est": 594,
+   "version": "3.4.2",
+   "per_tool": [
+    [
+     "web_search_exa",
+     1539
+    ],
+    [
+     "web_fetch_exa",
+     835
+    ]
+   ]
+  },
+  {
+   "key": "brave",
+   "label": "Brave Search",
+   "config_lines": 14,
+   "keys": 1,
+   "config": {
+    "command": "npx",
+    "args": [
+     "-y",
+     "@brave/brave-search-mcp-server@2.1.4"
+    ],
+    "env": {
+     "BRAVE_API_KEY": "<key>"
+    }
+   },
+   "tools": 8,
+   "chars": 110749,
+   "tokens_est": 27687,
+   "version": "2.1.4",
+   "per_tool": [
+    [
+     "brave_place_search",
+     77365
+    ],
+    [
+     "brave_llm_context",
+     10986
+    ],
+    [
+     "brave_local_search",
+     5388
+    ],
+    [
+     "brave_web_search",
+     5269
+    ],
+    [
+     "brave_news_search",
+     4150
+    ],
+    [
+     "brave_image_search",
+     3141
+    ],
+    [
+     "brave_video_search",
+     2869
+    ],
+    [
+     "brave_summarizer",
+     1572
+    ]
+   ]
+  },
+  {
+   "key": "serper",
+   "label": "Serper",
+   "config_lines": 14,
+   "keys": 1,
+   "config": {
+    "command": "npx",
+    "args": [
+     "-y",
+     "serper-search-scrape-mcp-server@0.1.2"
+    ],
+    "env": {
+     "SERPER_API_KEY": "<key>"
+    }
+   },
+   "tools": 2,
+   "chars": 1606,
+   "tokens_est": 402,
+   "version": "0.1.0",
+   "per_tool": [
+    [
+     "google_search",
+     1172
+    ],
+    [
+     "scrape",
+     431
+    ]
+   ]
+  },
+  {
+   "key": "hunter",
+   "label": "Hunter",
+   "config_lines": 11,
+   "keys": 1,
+   "config": {
+    "type": "http",
+    "url": "https://mcp.hunter.io/mcp",
+    "headers": {
+     "X-API-KEY": "<key>"
+    }
+   },
+   "tools": null,
+   "chars": null,
+   "tokens_est": null,
+   "version": null,
+   "per_tool": []
+  },
+  {
+   "key": "looot",
+   "label": "looot",
+   "config_lines": 8,
+   "keys": 0,
+   "config": {
+    "type": "http",
+    "url": "https://api.looot.ai/mcp"
+   },
+   "tools": 17,
+   "chars": 28757,
+   "tokens_est": 7189,
+   "version": null,
+   "per_tool": [
+    [
+     "search_catalog",
+     4359
+    ],
+    [
+     "run",
+     4292
+    ],
+    [
+     "discover",
+     3735
+    ],
+    [
+     "discover_smart",
+     2741
+    ],
+    [
+     "search",
+     1921
+    ],
+    [
+     "catalog_overview",
+     1847
+    ],
+    [
+     "media_link",
+     1619
+    ],
+    [
+     "inspect",
+     1406
+    ],
+    [
+     "feedback",
+     1333
+    ],
+    [
+     "runs_list",
+     977
+    ],
+    [
+     "capability_request",
+     916
+    ],
+    [
+     "top_up",
+     900
+    ],
+    [
+     "runs_get",
+     883
+    ],
+    [
+     "balance",
+     721
+    ],
+    [
+     "runs_evidence",
+     405
+    ],
+    [
+     "runs_cancel",
+     366
+    ],
+    [
+     "my_tools",
+     318
+    ]
+   ]
+  }
+ ],
+ "totals": {
+  "six_config_lines_one_file": 55,
+  "looot_config_lines": 8,
+  "six_keys": 5,
+  "measured_servers": 5,
+  "measured_tools": 44,
+  "measured_chars": 216593,
+  "measured_tokens_est": 54149,
+  "ratio_chars_per_token": 4
+ }
+}

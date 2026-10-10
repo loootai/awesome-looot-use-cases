@@ -1,0 +1,2267 @@
+# looot -- full integration guide
+
+This exact document is served at both /llms-full.txt and /integrate.md -- /integrate.md is
+an alias, byte-identical content, kept for callers that look for that name specifically.
+
+One gateway to discover, inspect, run, and pay for real (or fixture) provider operations
+through one account, one pricing model, and one run/idempotency contract.
+
+## MCP
+
+Streamable HTTP transport at https://api.looot.ai/mcp. Sign in with the browser (OAuth, no token):
+
+```
+claude mcp add looot https://api.looot.ai/mcp --transport http
+```
+
+then /mcp, looot, Authenticate (Codex, Cursor, Gemini CLI too). Headless fallback: add
+`--header "Authorization: Bearer $LOOOT_TOKEN"` to that command.
+
+17 tools: balance, capability_request, catalog_overview, discover, discover_smart, feedback, inspect, media_link, my_tools, run, runs_cancel, runs_evidence, runs_get, runs_list, search, search_catalog, top_up.
+register_endpoint, verify_endpoint: platform operators (provider-registry:write) only.
+Full descriptions and schemas: /llms-full.txt.
+
+## Token (REST and headless clients)
+
+1. Go to https://looot.ai/auth/sign-up and create an account with email and password (or
+   https://looot.ai/auth/sign-in if you already have one). This creates your organization.
+2. Open Settings, the "Agent tokens" tab, and "Create agent token". Tick the scopes it
+   needs -- `catalog.read`, `runs.read`, `runs.execute` cover discover/inspect/run/runs_get;
+   add `usage.read` for balance, `connections.read` for connections, `workflows.read`/
+   `workflows.execute` for workflows -- and submit.
+3. Copy the `cs_ms_...` secret (it is shown once) and set it as LOOOT_TOKEN in your
+   environment. Never hardcode or commit it.
+4. Top up before your first paid run: a new workspace starts at $0 and runs get 402
+   insufficient_balance until you do. Minimum: topUpLink.minimumUsd from GET /v1/balance.
+   Pay at https://looot.ai/usage, POST /v1/top-ups or the top_up tool. Browsing is free.
+
+REST, MCP and CLI all send it as `Authorization: Bearer ${LOOOT_TOKEN}`. Only this page,
+/skill.md, /catalog/*.md, /install.sh and the OpenAPI document work with no token.
+
+## MCP tools
+
+### discover -- Discover tools
+
+looot: free search of the data API catalog for up to 5 eligible endpoints by task, capability, category, provider, endpoint, input-schema, output-schema, schema, or hybrid mode (auto infers one). Each result has bounded relevance/evidence/availability/price/freshness components and its category; unknown evidence stays distinct from zero. minimumScore is applied before resultLimit. Identity modes never substitute another endpoint or provider. Never returns a mock endpoint. `detail` changes only how much of each candidate comes back, never ranking or matching: "full" (default) is the whole candidate; "title" returns rank, endpointId, provider, name, capability, category, estimatedPrice, priceBasis, costPerSuccessUsd, async, works {rate, runs, p50Ms, thin} and sourceCapability, enough to pick one to inspect. `capability` is the job id; `sourceCapability` the raw registered slug. Full candidates carry `credential` ("platform_own_key_optional": the platform key runs it, your own key is optional). No endpoint for the named job: candidates is empty and meta.warnings has "no_supply_for_job: <jobId>: ...". maxPrice removed every match: meta.warnings has "price_above_max: <jobId>: ..." naming the cheapest. For more than 5 results or a whole category, use search_catalog (limit up to 200, category/provider/capability/price filters). This search is lexical: when the job is easier to describe in a sentence and nothing here is a confident match, discover_smart judges a shortlist with one small paid AI call (see its description for the cost). `prefer` (balanced default, cheapest, reliable, fastest; `ranking` is an alias) orders providers inside a job; each full candidate's `facts` says why. Field details: https://api.looot.ai/llms-full.txt.
+
+Field details:
+
+`works` is {rate, runs, p50Ms, thin}: the measured success rate, decided runs, p50, and thin when under 5 runs.
+On a full candidate, eligibility "byok" only says your own key is allowed; `credential` says whose key a run uses.
+`facts` lists price per unit, cost per success, success rate with its sample size, p50, async and required inputs.
+`sourceCapability` is the raw slug an endpoint was registered under; `capability` is the job it does (the alias target).
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "default": "auto",
+      "type": "string",
+      "enum": [
+        "auto",
+        "task",
+        "capability",
+        "category",
+        "provider",
+        "endpoint",
+        "input-schema",
+        "output-schema",
+        "schema",
+        "hybrid"
+      ]
+    },
+    "ranking": {
+      "type": "string",
+      "enum": [
+        "relevance",
+        "price",
+        "reliability",
+        "community",
+        "balanced"
+      ]
+    },
+    "prefer": {
+      "type": "string",
+      "enum": [
+        "cheapest",
+        "reliable",
+        "fastest",
+        "balanced"
+      ]
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$"
+    },
+    "category": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "taskDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "endpointId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maxPrice": {
+      "type": "number",
+      "minimum": 0
+    },
+    "allowedProviders": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "blockedProviders": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "eligibilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "internal-validation",
+          "byok",
+          "partner-required",
+          "prohibited"
+        ]
+      }
+    },
+    "executionModes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sync",
+          "async"
+        ]
+      }
+    },
+    "minimumScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "resultLimit": {
+      "default": 5,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "detail": {
+      "default": "full",
+      "type": "string",
+      "enum": [
+        "title",
+        "full"
+      ]
+    },
+    "includeUnavailable": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": {}
+}
+```
+
+### discover_smart -- Discover tools by describing the job (paid)
+
+looot: COSTS MONEY (paid search of the data API catalog, takes about 1-2 seconds) -- use `discover` (free, instant) first and only reach for this when a lexical search cannot express the job, e.g. "find someone's work email from their name and company" where no endpoint's own text says "email". Two stages: (1) the free lexical index narrows the whole catalog to a shortlist; (2) ONE typesafe-choice run (TypeSafe's Jev model, billed per input token: about $0.00005 for a typical shortlist, and a call holds at most about $0.0004 before it settles to real usage) judges that shortlist against your `useCase` and returns the best fit plus a probability for every candidate. `candidates` comes back ranked by Jev's probability, each row carrying `probability` and `lexicalRank` (where the free search had put it). `smart` carries the winning endpointId, Jev's confidence, and the runId/cost of the judging call -- it appears on your normal run history and bill like any other run, charged to this workspace. Where the server has the job-first skip on, a query the free search already resolves to a single job with a clear top endpoint makes no paid call: `smart` comes back with `model: "job-first"`, `runId: null`, `costUsd: 0` and `reason: "single_job_clear_winner"`, and `candidates` keep the free order. If TypeSafe fails, times out, or answers unusably, this NEVER errors: it returns the plain lexical shortlist with `smart: null` and `degraded: { reason, detail }`, so you always get an answer. When the free search finds nothing, no paid call is made: `degraded.reason` is "no_supply_for_job" when no endpoint does the job the use case names (with search_catalog's `warnings` and `unsuppliedJobs`), else "no_candidates" (with `priceHint` when a price filter removed every match). A timed-out judging run is cancelled; it is still billed if it had already reached the provider. Follow up with inspect/run on the chosen endpointId exactly as you would after `discover`.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "useCase": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "candidateLimit": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 20
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "keyless": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "mock": {
+          "type": "boolean"
+        },
+        "maxPriceMicros": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "includeUnavailable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "useCase"
+  ],
+  "additionalProperties": {}
+}
+```
+
+### inspect -- Inspect an endpoint
+
+looot: inspect a data API endpoint (free). Return the exact input/output schema, price formula, estimated max cost and provider identity for one endpoint before running it. A run needs prepaid credit at least equal to the estimated max cost. When the endpoint has a stored output format, `outputFormat` carries it with `provenance.verified` (false means an expected shape not yet checked against real answers) and a one-line `note`. `endpoint.capability` is the job id the endpoint does (the alias target), `endpoint.sourceCapability` the raw slug, and `endpoint.credential` whose key a run uses ("platform_own_key_optional": the platform key runs it, your own key is optional). Also accepts a workflow id directly (CA-WF-02/08), returning that workflow's own current snapshot instead. `detail` "run" returns only what a run needs: endpoint identity, job, mode, price and credential, estimatedMaxCost, requiredInputFields, inputSchema, outputFormat (or outputSummary) and a `run` template (replace its <placeholders> and send a new `idempotencyKey` per run), without usageHints' REST and CLI examples. The default "full" is unchanged.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "endpointId": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string",
+      "enum": [
+        "full",
+        "run"
+      ]
+    }
+  },
+  "required": [
+    "endpointId"
+  ],
+  "additionalProperties": {}
+}
+```
+
+### run -- Run an endpoint
+
+looot: run a data API endpoint (paid). Spends prepaid credit; a new workspace starts with none. Validates input, checks the workspace budget, reserves the estimated max cost, runs or queues the endpoint. Some endpoints act on your connected accounts and can send or change things there. Idempotent on idempotencyKey: a reused key returns the SAME run (even in flight) with replayed:true, never a second charge. Out of credits is a tool error (status "blocked", error.code "insufficient_balance") whose payload carries error.message, topUp.checkoutUrl and topUp.dashboardUrl; a run after payment needs a NEW idempotencyKey. A successful call can still carry status:"failed" (unknown endpointId, input failing the endpoint's schema), with `error` (code, message, retryable, retryHint). endpointId "workflow:<id>" starts that workflow with this idempotencyKey and returns a workflowRunId. endpointId: "job:<job id>" (the job.id on a search row, e.g. job:people.email.find) runs the job: looot picks the first provider in fallback.prefer order (default balanced) that this workspace can run now and whose schema accepts your input; the run's endpointId is that provider and `requestedJob` says which job and why. With `fallback`, the job's other providers follow in the same order. `wait` (seconds, default 20, max 60): returns the settled run inline if it finishes in time, else the queued or running run. wait: 0 returns at once. `fallback` (true, or {maxAttempts, maxCostUsd, prefer, exclude, stopAtFirstMiss}): on a miss or error, tries the next provider of the same job within ONE hold; only attempts that ran are charged (a site refusal too); a site 404/410 ends the walk; the result carries `route`. Every run carries `outcome` (hit|weak|miss|error|rejected|skipped|pending); a completed run can carry `normalized` next to `result`. Field details: https://api.looot.ai/llms-full.txt.
+
+Field details:
+
+The run evaluates the workspace budget before it reserves the estimated max cost. Retries never double-charge.
+`error` on a failed run: { code, providerStatus, message, requestId, whoseError: "provider"|"gateway"|"customer", retryable, retryHint }, never secrets or raw provider headers.
+Out of credits: `topUp.checkoutUrl` is Stripe's hosted payment page for the suggested amount, never below topUp.minimumUsd; `topUp.dashboardUrl` is the usage page. error.message is the one sentence to show the customer and links topUp.dashboardUrl.
+`route` (with `fallback`): servedBy, attempts with outcome and reason, skipped, and summary.
+`wait` returns the settled run in the same shape runs_get does. Some endpoints act on your own connected accounts (access "needs_your_account" on a search_catalog row).
+`normalized` is the same block runs_get and GET /v1/runs/{id} return.
+A result with `media` is a file. With signed download links on, media.downloadUrl (and downloadUrlExpiresAt) downloads it with plain curl, no token; when it expired, call media_link with the runId.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "endpointId": {
+      "type": "string"
+    },
+    "input": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "idempotencyKey": {
+      "type": "string"
+    },
+    "output": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "const": "raw"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "const": "custom"
+            },
+            "mappingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "version": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "mode",
+            "mappingId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "fallback": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "maxCostUsd": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 100
+            },
+            "prefer": {
+              "type": "string",
+              "enum": [
+                "cheapest",
+                "reliable",
+                "fastest",
+                "balanced"
+              ]
+            },
+            "exclude": {
+              "maxItems": 50,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            },
+            "stopAtFirstMiss": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "wait": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 60
+    }
+  },
+  "required": [
+    "endpointId",
+    "input",
+    "idempotencyKey"
+  ],
+  "additionalProperties": {}
+}
+```
+
+### runs_get -- Get a run
+
+looot: get a run's lifecycle status separately from the provider's own response status, plus result and cost once settled. On a failed run, `error` carries { code, providerStatus, message, requestId, whoseError: "provider"|"gateway"|"customer", retryable, retryHint } -- never secrets or raw provider headers. Also follows a workflow run started via run() with endpointId "workflow:<id>" (CA-WF-02/CA-WF-08), by its returned workflowRunId. A completed run can carry an optional `normalized` object next to `result` (fixed field names per job, the same block GET /v1/runs/{id} returns); absent when it does not apply. A result with `media` is a file, and media.downloadUrl is its download link.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "runId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId"
+  ]
+}
+```
+
+### media_link -- Get a download link for a run file
+
+looot: get a short-lived download link for a file a run produced (audio, image, video, PDF). Download it with curl or fetch within 15 minutes; call again for a new link. Pass the runId (and mediaId when the run has several files; the error lists them). The answer carries downloadUrl (no token needed), downloadUrlExpiresAt, contentType, byteLength, sha256 to check the download, and a filename suggestion. Download the file, do not paste it into the chat, and keep the link out of logs and shared documents. Pass inline:true for a png, jpeg, gif or webp image under 200 KB to also see it in the answer. Errors: run_not_found, media_not_found, media_expired, media_id_required, media_links_disabled.
+
+Field details:
+
+Input: runId, mediaId (optional when the run has one file), inline (optional, png/jpeg/gif/webp up to 200 KB raw, returned as an image block next to the link; audio, video and PDF are never inline).
+Output: runId, mediaId, contentType, byteLength, sha256, expiresAt (when the stored file is deleted), downloadUrl, downloadUrlExpiresAt (15 minutes from the call, never after expiresAt), downloadPath (needs a token), filename.
+Check the download with the sha256. runs_list rows never carry downloadUrl.
+Errors: run_not_found (also another workspace's run), media_not_found, media_expired, media_id_required (the error lists mediaIds), media_links_disabled.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "runId": {
+      "type": "string"
+    },
+    "mediaId": {
+      "type": "string"
+    },
+    "inline": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "runId"
+  ]
+}
+```
+
+### runs_list -- List runs
+
+looot: list runs: a cursor-paginated run history filtered by workspace, status, or capability. Each row is a bounded summary -- runId, endpointId, providerId, status, providerResponseStatus, createdAt, completedAt, actualCost, error (same shape as run/runs_get), resultBytes, and servedEndpointId/servedProviderId (the endpoint and provider that answered; absent when none did) -- never the full result payload unless includeResult:true, which returns full run records.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "failed",
+        "blocked",
+        "stopped",
+        "reconciliation_pending",
+        "pending_provider"
+      ]
+    },
+    "capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$"
+    },
+    "limit": {
+      "default": 20,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    },
+    "cursor": {
+      "type": "string"
+    },
+    "includeResult": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": {}
+}
+```
+
+### runs_cancel -- Cancel a run
+
+looot: cancel a queued or running run -- same as POST /v1/runs/{id}/cancel. Returns the run's current state either way (already-settled runs are returned unchanged, never an error).
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "runId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId"
+  ]
+}
+```
+
+### runs_evidence -- Get a run's attempt evidence
+
+looot: get every attempt made for a run, summarised: status, the provider's own response status, latency in ms, the receipt id, and cost -- same data as GET /v1/runs/{id}/attempts, never raw provider headers or bodies.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "runId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId"
+  ]
+}
+```
+
+### balance -- Get wallet balance
+
+looot: check the balance: available and reserved balance for a workspace. topUpLink always carries this gateway's minimum top-up (minimumUsd) and dashboardUrl (the usage page with the top-up form); the minimum is a purchase minimum, not a required wallet balance. balance_sufficient means positive funds, not that a given run is affordable; a run's estimated total cost is the figure to compare with the available balance. An already-pending Stripe Checkout session may be returned at any balance (reading the balance never opens one). This tool reads only and opens no payment session.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {}
+}
+```
+
+### top_up -- Get a payment link to add credits
+
+looot: top up credits: open a Stripe-hosted Checkout page to add prepaid credits to this workspace and return its URL for the customer to pay on (the agent never enters card details). amountUsd is optional: omitted, it is the suggested amount (at least this gateway's minimum, the minimumUsd that balance reports; more when the balance is negative). Below the minimum is refused with the minimum in the error. The same amount within 10 minutes returns the same pending session; at most 3 new sessions per hour. When a session cannot be opened (billing off, a read-only token, the operator workspace) the result carries checkoutUrl: null, a reason, and dashboardUrl where a human can top up instead.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "amountUsd": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1000000
+    }
+  }
+}
+```
+
+### register_endpoint -- Register an endpoint (operator tool)
+
+looot: register one endpoint directly into the live provider registry as data -- no candidate/compatibility-gate/activation-bundle review required. Creates the provider first if it does not exist yet (provider.displayName required in that case). Idempotent by content digest: registering the identical endpoint again is a no-op; a changed one appends a new version and supersedes the previous active one. The registered endpoint is discoverable and runnable through discover/inspect/run above immediately, with no further tool call needed. When endpoint.capability is not a known canonical job id or alias, the response's capabilitySuggestions lists the closest canonical jobs by name/description match; pass autoCapability: true to register under the top suggestion automatically once its score clears the confidence threshold (default: register exactly the capability submitted).
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "providerId": {
+      "type": "string",
+      "pattern": "^(?:[a-z][a-z0-9_-]{2,127}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+    },
+    "provider": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "categoryId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9_-]{2,127}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+        },
+        "homepageUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "docsUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{1,31}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "displayName"
+      ],
+      "additionalProperties": false
+    },
+    "endpoint": {
+      "type": "object",
+      "properties": {
+        "endpointId": {
+          "type": "string",
+          "pattern": "^(?:[a-z][a-z0-9_-]{2,127}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+        },
+        "capability": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "executionMode": {
+          "type": "string",
+          "enum": [
+            "sync",
+            "async"
+          ]
+        },
+        "eligibility": {
+          "type": "string",
+          "enum": [
+            "internal-validation",
+            "byok",
+            "partner-required",
+            "prohibited"
+          ]
+        },
+        "authType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "api_key_header",
+            "api_key_query",
+            "api_key_body",
+            "byok"
+          ]
+        },
+        "price": {
+          "type": "object",
+          "properties": {
+            "currency": {
+              "type": "string",
+              "const": "USD"
+            },
+            "perCall": {
+              "type": "number",
+              "minimum": 0
+            },
+            "perResult": {
+              "type": "number",
+              "minimum": 0
+            },
+            "estimateFormula": {
+              "type": "string"
+            },
+            "resultCountPath": {
+              "type": "string"
+            },
+            "priceByInput": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "rates": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "perResult": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "field",
+                "rates"
+              ],
+              "additionalProperties": false
+            },
+            "providerCostPath": {
+              "type": "string"
+            },
+            "providerCostUnitUsd": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "volumeInputs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\/.+$"
+              }
+            },
+            "volumeProduct": {
+              "minItems": 2,
+              "maxItems": 4,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\/.+$"
+              }
+            },
+            "volumeTextLength": {
+              "minItems": 1,
+              "maxItems": 4,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\/.+$"
+              }
+            },
+            "minHoldResults": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000
+            },
+            "countFrom": {
+              "type": "string",
+              "enum": [
+                "input",
+                "output"
+              ]
+            }
+          },
+          "required": [
+            "currency",
+            "estimateFormula"
+          ]
+        },
+        "inputSchema": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "$schema": {
+                  "type": "string",
+                  "const": "https://json-schema.org/draft/2020-12/schema"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "object"
+                }
+              },
+              "required": [
+                "$schema",
+                "type"
+              ],
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outputSchema": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "$schema": {
+                  "type": "string",
+                  "const": "https://json-schema.org/draft/2020-12/schema"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "object"
+                }
+              },
+              "required": [
+                "$schema",
+                "type"
+              ],
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestBinding": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "number",
+                  "const": 1
+                },
+                "path": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "string",
+                        "pattern": "^\\/[^/]+(?:\\/[^/]+)*$"
+                      },
+                      "default": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "from"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "query": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "string",
+                        "pattern": "^\\/[^/]+(?:\\/[^/]+)*$"
+                      },
+                      "encoding": {
+                        "default": "scalar",
+                        "type": "string",
+                        "enum": [
+                          "scalar",
+                          "repeat",
+                          "csv",
+                          "json"
+                        ]
+                      },
+                      "default": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "from"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "header": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "string",
+                        "pattern": "^\\/[^/]+(?:\\/[^/]+)*$"
+                      },
+                      "default": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "from"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "body": {
+                  "default": {
+                    "mode": "remaining_object"
+                  },
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "type": "string",
+                          "const": "remaining_object"
+                        }
+                      },
+                      "required": [
+                        "mode"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "type": "string",
+                          "const": "field_root"
+                        },
+                        "from": {
+                          "type": "string",
+                          "pattern": "^\\/[^/]+(?:\\/[^/]+)*$"
+                        }
+                      },
+                      "required": [
+                        "mode",
+                        "from"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "type": "string",
+                          "const": "none"
+                        }
+                      },
+                      "required": [
+                        "mode"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uiSchema": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "order": {
+                  "default": [],
+                  "maxItems": 200,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "widgets": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "textarea",
+                      "number",
+                      "boolean",
+                      "select",
+                      "json"
+                    ]
+                  }
+                },
+                "labels": {
+                  "default": {},
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "httpContract": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "protocol": {
+                  "type": "string",
+                  "enum": [
+                    "https_json",
+                    "https_binary"
+                  ]
+                },
+                "allowedHosts": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "fixedMethod": {
+                  "type": "string",
+                  "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE"
+                  ]
+                },
+                "fixedPath": {
+                  "type": "string",
+                  "pattern": "^\\/[^?#]*$"
+                },
+                "authPlacement": {
+                  "type": "string",
+                  "enum": [
+                    "header",
+                    "query",
+                    "body",
+                    "none"
+                  ]
+                },
+                "asyncPattern": {
+                  "default": null,
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "poll"
+                        },
+                        "resultEndpointId": {
+                          "type": "string",
+                          "pattern": "^(?:[a-z][a-z0-9_-]{2,127}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+                        },
+                        "idPath": {
+                          "type": "string",
+                          "pattern": "^\\/[^\\s]*$"
+                        },
+                        "idField": {
+                          "default": "id",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "statusPath": {
+                          "type": "string",
+                          "pattern": "^\\/[^\\s]*$"
+                        },
+                        "doneWhen": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "pendingCondition": {
+                          "type": "object",
+                          "properties": {
+                            "statusIn": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "minimum": 100,
+                                "maximum": 599
+                              }
+                            },
+                            "bodyPath": {
+                              "type": "string",
+                              "pattern": "^\\/[^\\s]*$"
+                            },
+                            "bodyEquals": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "failWhen": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "failMessagePath": {
+                          "type": "string",
+                          "pattern": "^\\/[^\\s]*$"
+                        },
+                        "pollIntervalMs": {
+                          "default": 2000,
+                          "type": "integer",
+                          "minimum": 250,
+                          "maximum": 300000
+                        },
+                        "timeoutMs": {
+                          "default": 60000,
+                          "type": "integer",
+                          "minimum": 1000,
+                          "maximum": 600000
+                        },
+                        "webhook": {
+                          "type": "object",
+                          "properties": {
+                            "field": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 200
+                            }
+                          },
+                          "required": [
+                            "field"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "resultEndpointId",
+                        "idPath"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "responseFailure": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "pointer": {
+                          "type": "string",
+                          "pattern": "^\\/[^\\s]*$"
+                        },
+                        "okValues": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        },
+                        "failIfPresent": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "failIfNull": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "outcome": {
+                          "type": "string",
+                          "const": "miss"
+                        },
+                        "messagePointer": {
+                          "type": "string",
+                          "pattern": "^\\/[^\\s]*$"
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "pointer": {
+                              "type": "string",
+                              "pattern": "^\\/[^\\s]*$"
+                            },
+                            "statusPointer": {
+                              "type": "string",
+                              "pattern": "^\\/[^\\s]*$"
+                            },
+                            "okValues": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              }
+                            },
+                            "messagePointer": {
+                              "type": "string",
+                              "pattern": "^\\/[^\\s]*$"
+                            }
+                          },
+                          "required": [
+                            "pointer",
+                            "statusPointer",
+                            "okValues"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "pointer"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "pointer": {
+                            "type": "string",
+                            "pattern": "^\\/[^\\s]*$"
+                          },
+                          "okValues": {
+                            "minItems": 1,
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "boolean"
+                                }
+                              ]
+                            }
+                          },
+                          "failIfPresent": {
+                            "type": "boolean",
+                            "const": true
+                          },
+                          "failIfNull": {
+                            "type": "boolean",
+                            "const": true
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "const": "miss"
+                          },
+                          "messagePointer": {
+                            "type": "string",
+                            "pattern": "^\\/[^\\s]*$"
+                          },
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "pattern": "^\\/[^\\s]*$"
+                              },
+                              "statusPointer": {
+                                "type": "string",
+                                "pattern": "^\\/[^\\s]*$"
+                              },
+                              "okValues": {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "boolean"
+                                    }
+                                  ]
+                                }
+                              },
+                              "messagePointer": {
+                                "type": "string",
+                                "pattern": "^\\/[^\\s]*$"
+                              }
+                            },
+                            "required": [
+                              "pointer",
+                              "statusPointer",
+                              "okValues"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "pointer"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  ]
+                },
+                "timeoutMs": {
+                  "type": "integer",
+                  "minimum": 1000,
+                  "maximum": 120000
+                },
+                "mediaFields": {
+                  "minItems": 1,
+                  "maxItems": 4,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(\\/[^/]+)+$"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "url",
+                          "base64"
+                        ]
+                      },
+                      "contentType": {
+                        "type": "string",
+                        "pattern": "^(audio|image|video)\\/[A-Za-z0-9.+-]+$|^application\\/pdf$"
+                      },
+                      "allowedHosts": {
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "hostname",
+                          "pattern": "^(?=.{1,253}\\.?$)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[-0-9a-zA-Z]{0,61}[0-9a-zA-Z])?)*\\.?$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "origin": {
+                  "type": "object",
+                  "properties": {
+                    "statusPointer": {
+                      "type": "string",
+                      "pattern": "^\\/[^\\s]*$"
+                    },
+                    "titlePointer": {
+                      "type": "string",
+                      "pattern": "^\\/[^\\s]*$"
+                    },
+                    "errorRules": {
+                      "maxItems": 16,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "httpStatus": {
+                            "type": "integer",
+                            "minimum": 400,
+                            "maximum": 599
+                          },
+                          "pointer": {
+                            "type": "string",
+                            "pattern": "^\\/[^\\s]*$"
+                          },
+                          "equals": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "type": "integer",
+                            "minimum": 400,
+                            "maximum": 599
+                          }
+                        },
+                        "required": [
+                          "httpStatus",
+                          "pointer",
+                          "equals",
+                          "origin"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "fetchMethod": {
+                      "type": "string",
+                      "enum": [
+                        "http",
+                        "browser",
+                        "browser_proxy"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "missStatuses": {
+                  "minItems": 1,
+                  "maxItems": 5,
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 400,
+                    "maximum": 499
+                  }
+                }
+              },
+              "required": [
+                "protocol",
+                "allowedHosts",
+                "fixedMethod",
+                "fixedPath",
+                "authPlacement"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "examples": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        },
+        "effectClassification": {
+          "type": "string",
+          "enum": [
+            "idempotent",
+            "effectful",
+            "unknown"
+          ]
+        },
+        "inputSchemaSummary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "outputSchemaSummary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "docsUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "testRequest": {
+          "anyOf": [
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "endpointId",
+        "capability",
+        "name",
+        "description",
+        "executionMode",
+        "eligibility",
+        "authType",
+        "price"
+      ],
+      "additionalProperties": false
+    },
+    "publishToPublicCatalog": {
+      "type": "boolean"
+    },
+    "autoCapability": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "providerId",
+    "endpoint"
+  ]
+}
+```
+
+### verify_endpoint -- Verify an endpoint (operator tool)
+
+looot: verify an endpoint: run its stored testRequest through the exact same execute/settle path a normal run takes -- the same application logic POST /v1/catalog/endpoints/:id/verify uses -- and on success stamp verifiedAt/verifiedRunId so the catalog listing's `verified` field reflects it. Returns { ok, version, runId, latencyMs, error }. Fails with a tool error when the endpoint is unknown, has no stored testRequest, or the caller lacks the required scopes.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "endpointId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "endpointId"
+  ]
+}
+```
+
+### search -- Search the catalog
+
+looot: free search of the data API catalog's search endpoints by job. Describe the task in plain words ("verify an email", "backlinks for a domain"), or pass filters (filters.capability takes a job id from catalog_overview); query is optional when a filter is set. Each row has endpointId, provider, capability (the job id), estimatedPrice, priceBasis, costPerSuccessUsd (price / works.rate; thin rows fill missing runs at the job average, which cheapest sorts on), works {rate, runs, p50Ms, thin}, access, async and credential. `prefer` (balanced default, cheapest, reliable, fastest) orders providers inside a job. When no endpoint does the job, items is empty and warnings names the job: tell the user, or call capability_request. When filters.maxPriceMicros removes every match, priceHint names the cheapest one. 10 rows by default; limit up to 200, then offset and nextOffset. detail "full" adds summary, stats, facts and fees. No confident match for a job you can describe in a sentence? discover_smart ranks one for a small fee. Next: inspect the endpointId you pick.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "detail": {
+      "type": "string",
+      "enum": [
+        "title",
+        "full"
+      ]
+    },
+    "prefer": {
+      "type": "string",
+      "enum": [
+        "cheapest",
+        "reliable",
+        "fastest",
+        "balanced"
+      ]
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "keyless": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "mock": {
+          "type": "boolean"
+        },
+        "maxPriceMicros": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "includeUnavailable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": {}
+}
+```
+
+### search_catalog -- Search the catalog by job
+
+looot: free ranked full-text search of the data API catalog, with job expansion: a query matching a job's title or alias ("verify an email") returns every endpoint of that job across providers, and an unmatched sentence falls back to looser word overlap. Each item carries `category`, `job` (id, title), `matchedBy` (text|capability|tokens), `mock` (a demo provider, ranked last), `verified`, `keyless`, `runnableNow`, `stats` (30-day calls/successRate/p50Ms/sampleSize, empty answers count as success, null without evidence) and `access`: "runs_now" (keyless or a platform key exists), "needs_your_account" (connect your own account first) or "coming_soon" (cannot run yet: no platform key). `capability` is the job id, `sourceCapability` the raw registered slug, `works` {rate, runs, p50Ms, thin} (thin rows fill missing runs at the job average, which cheapest sorts on), `credential` whose key a run uses. `expandedCapabilities` lists matched job ids; pass one as `filters.capability`. When no endpoint does the named job ("weather"), `items` is empty, `unsuppliedJobs` names it and `warnings` has code "no_supply_for_job". If `filters.maxPriceMicros` removes every match, `priceHint` (code "price_above_max") names the cheapest. `detail: "title"` is a cheap first pass, same rows in the same order: endpointId, provider, name, capability, category, estimatedPrice, priceBasis, access, costPerSuccessUsd and async, plus works, sourceCapability and credential. `limit` caps a page at 200; page with `offset` and `nextOffset` (null at the end). `query` is optional with a filter: `filters: { category: "..." }` browses a category. Find the job here, then discover/inspect/run an endpoint. `prefer` (balanced default, cheapest, reliable, fastest) orders providers inside a job; `facts` on each full row says why. Field details: https://api.looot.ai/llms-full.txt.
+
+Field details:
+
+`runnableNow` is true when the endpoint is usable right now with zero setup.
+`mock` rows rank last unless `filters.mock` is true.
+A `warnings` entry is { code, jobId, jobTitle, message }. With `priceHint`, `items` is empty.
+`access`: "runs_now" means keyless or a platform key exists; "needs_your_account" means the endpoint acts on your own account (Instantly, Gmail, LinkedIn, Meta Ads); "coming_soon" is a real provider with no platform key yet.
+`expandedCapabilities` lists only jobs with at least one endpoint in the catalog; passing one as `filters.capability` returns its endpoints, subject to your other filters. A job name in the query surfaces its endpoints even when their own name and description do not contain the query.
+`detail: "title"` rows have no summary, stats, job, matchedBy or fee breakdown. Re-run without it, or call inspect, once you have narrowed down.
+`capability` equals job.id (the alias target); `sourceCapability` is the raw slug it was registered under.
+`works` is {rate, runs, p50Ms, thin}: the useful-answer rate costPerSuccessUsd divides by, decided runs, p50, and thin under 5 runs.
+`credential` "platform_own_key_optional": the platform key runs it and your own key is optional, which is what eligibility "byok" means when a platform key exists.
+`priceHint` fields: { code: "price_above_max", jobId, jobTitle, endpointId, estimatedPrice, priceBasis, message }. It replaces cheaper rows about something else.
+`unsuppliedJobs` and `warnings` appear only when non-empty. The biggest category holds several thousand endpoints, so page with `offset`.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "detail": {
+      "type": "string",
+      "enum": [
+        "title",
+        "full"
+      ]
+    },
+    "prefer": {
+      "type": "string",
+      "enum": [
+        "cheapest",
+        "reliable",
+        "fastest",
+        "balanced"
+      ]
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "keyless": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "mock": {
+          "type": "boolean"
+        },
+        "maxPriceMicros": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "includeUnavailable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": {}
+}
+```
+
+### catalog_overview -- What the catalog covers
+
+looot: free overview of the data API catalog: what exists, as categories > platforms > jobs, with counts at every level: providerCount (distinct providers), endpointCount, runnableCount (runnable without your own key: keyless or a platform key exists), cheapestPerCall and cheapestPerResult (lowest price in dollars, the price you pay, null when nothing is priced that way; the two are never compared). Same body as GET /v1/catalog/overview with the same arguments. No arguments: depth summary (totals plus one line per category, a few KB). depth platforms adds each category's platforms, jobs adds each platform's jobs, full is the whole document (large). category or platform answers only that branch (default depth platforms; pass depth jobs for its jobs, which can be hundreds of KB for a big branch such as "other", so prefer topic) and then has no totals. topic (e.g. "email", "phone") answers the matching jobs, at most 25, with truncated when there are more. Unknown ids answer unknown_category or unknown_platform. Follow up with search_catalog or discover to pick an endpoint for a job.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "depth": {
+      "description": "One of summary, platforms, jobs, full. Default summary, or platforms when category or platform is given (pass jobs to list the jobs). Not with topic.",
+      "type": "string"
+    },
+    "category": {
+      "description": "A category id (from the summary). Answers only that category.",
+      "type": "string"
+    },
+    "platform": {
+      "description": "A platform id (from depth platforms). Answers only that platform, inside its category.",
+      "type": "string"
+    },
+    "topic": {
+      "description": "Words such as \"email\" or \"phone number\". Answers the matching jobs (at most 25) with their counts.",
+      "type": "string"
+    }
+  },
+  "additionalProperties": {}
+}
+```
+
+### capability_request -- Ask for a provider or job we do not have
+
+looot: request a provider or job the data API catalog does not cover yet -- same as POST /v1/capability-requests. title and description are yours; desiredInputs/desiredOutputs are optional field lists the endpoint should take/return. idempotencyKey (yours, stable per request) makes a retry a no-op instead of a duplicate ask.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "desiredInputs": {
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    },
+    "desiredOutputs": {
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "idempotencyKey"
+  ]
+}
+```
+
+### feedback -- Send looot feedback
+
+looot: tell the looot team what went wrong or what would help -- free, never charged, same as POST /v1/feedback and `looot feedback`. Call it when a run returned a wrong, empty or oversized answer, when docs or an error message were unclear, when a provider or job you needed is missing (kind "idea"), or when something worked well (kind "praise"). kind: bug, idea, praise or question. message: what you did, what you expected and what happened, up to 4000 characters; do not include secrets or customer personal data. runId and endpointId are optional and make a report much easier to act on (a runId outside this workspace is ignored). rating 1 to 5 is optional. A workspace may send 20 a day; at the limit you get feedback_rate_limited, so put the most important points into one message. Returns { feedbackId, status: "new" }.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "bug",
+        "idea",
+        "praise",
+        "question"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$"
+    },
+    "endpointId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$"
+    },
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    }
+  },
+  "required": [
+    "kind",
+    "message"
+  ]
+}
+```
+
+### my_tools -- List my tenant tools
+
+looot: list the tenant tools this workspace may run -- id, name, description, and whether it is callable right now (a published, non-revoked tool). Same data as GET /v1/tenant-tools.
+
+Input schema:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {}
+}
+```
+
+## CLI
+
+Install: `npm install -g looot`.
+Then `looot login` (or set LOOOT_TOKEN), and top up (`looot balance` shows the minimum)
+before your first `looot run`:
+
+```
+looot run <endpoint-id> --input '{"..."}' [--idempotency-key <key>] [--wait] [--fallback]
+looot inspect <endpoint-id>
+looot search "<query>"
+looot runs get|list|cancel|evidence <run-id>
+looot balance
+looot whoami
+looot init
+```
+
+`looot init` wires the MCP server into Claude Code/Cursor/Codex and writes the SKILL.md served
+at /skill.md. `looot help --all` lists every command and flag; every command accepts
+`--format json|human|jsonl`.
+
+## Customer REST routes
+
+- `GET /v1/discover` -- Discover operations
+  e.g. `GET /v1/discover?query=enrich+a+company+from+its+domain&mode=auto` -> `{"candidates":[{"endpointId":"parity-tomba-companies-enrich","provider":"tomba","access":"runs_now", ...}],"meta":{...}}`
+- `GET /v1/catalog/search` -- Ranked full-text catalog search, with capability expansion and a stemmed-token fallback so a long natural-language query is never empty
+  e.g. `GET /v1/catalog/search?q=verify+an+email&limit=5` -> `{"query":"verify an email","total":3,"endpoints":[{"endpointId":"hunter-email-verify","access":"coming_soon", ...}]}`
+- `GET /v1/catalog/endpoints` -- Paged, filtered, faceted catalog listing
+  e.g. `GET /v1/catalog/endpoints?capability=company.enrich&limit=20` -> `{"endpoints":[{"endpointId":"parity-tomba-companies-enrich","access":"runs_now", ...}],"nextCursor":null}`
+- `GET /v1/operations/{endpointId}` -- Inspect an operation
+  e.g. `GET /v1/operations/parity-tomba-companies-enrich` -> `{"endpoint":{"id":"parity-tomba-companies-enrich","price":{"estimateFormula":"$0.0089 / call"}},"usageHints":{...},"inputSchema":{...}}`
+- `POST /v1/runs` -- Create a run -- idempotencyKey replay returns the existing run (any status) with replayed:true instead of creating a new one
+  e.g. `POST /v1/runs?wait=20 {"endpointId":"icypeas-email-verify","input":{"email":"[email removed]"},"idempotencyKey":"<key>"}` -> `{"runId":"run_000028","status":"completed","result":{"raw":"..."},"actualCost":0.0019,"error":null}  -- or, past the wait window (or wait omitted): {"runId":"run_000028","status":"queued","estimatedCost":0.0019,"reservationId":"res_000025"}`
+- `GET /v1/runs/{runId}` -- Get a run -- on a failed run, error carries { code, providerStatus, message, requestId, whoseError, retryable, retryHint }, never secrets or raw provider headers
+  e.g. `GET /v1/runs/run_000028` -> `{"status":"completed","result":{"raw":"..."},"actualCost":0,"error":null}`
+- `POST /v1/runs/{runId}/cancel` -- Cancel a run
+  e.g. `POST /v1/runs/run_000028/cancel` -> `{"status":"stopped"}`
+- `GET /v1/runs/{runId}/attempts` -- Inspect durable attempts and receipts
+  e.g. `GET /v1/runs/run_000028/attempts` -> `{"attempts":[{"providerId":"hunter","status":"succeeded","costMicros":12250, ...}]}`
+- `GET /v1/balance` -- Get workspace balance. topUpLink includes purchase minimum, dashboard and any pending checkout. Compare funds with each run estimate; the purchase minimum is not a wallet threshold. Reading balance never creates checkout
+  e.g. `GET /v1/balance` -> `{"available":0,"reserved":0,"topUpLink":{"minimumUsd":<gateway minimum>, ...}}`
+- `GET /v1/top-ups` -- List prepaid top-ups
+  e.g. `GET /v1/top-ups` -> `{"topUps":[{"amountMicros":20000000,"status":"succeeded", ...}]}`
+- `POST /v1/top-ups` -- Request a prepaid top-up (creates a Stripe Checkout Session when Stripe is configured)
+  e.g. `POST /v1/top-ups {"amountMicros":20000000}` -> `{"checkoutUrl":"https://checkout.stripe.com/..."}`
+- `GET /v1/connections` -- List connection metadata
+  e.g. `GET /v1/connections` -> `{"connections":[{"connectionId":"conn_...","providerId":"instantly","status":"active"}]}`
+- `POST /v1/connections` -- Register a write-only API credential
+  e.g. `POST /v1/connections {"providerId":"instantly","credential":{...}}` -> `{"connectionId":"conn_...","status":"active"}`
+- `GET /v1/public-catalog` -- Search stable redacted public catalog pages by text, capability, category, or provider
+  e.g. `GET /v1/public-catalog?limit=20` -> `{"items":[{"catalogItemId":"...", ...}],"nextCursor":null}`
+- `GET /v1/public-catalog/{catalogItemId}` -- Inspect one public published catalog item; hidden and missing ids share 404
+  e.g. `GET /v1/public-catalog/pc_hunter_email_verify` -> `{"catalogItemId":"pc_hunter_email_verify", ...}`
+- `POST /v1/public-catalog/compare` -- Compare 2 to 20 explicit public catalog items without inferring missing price semantics
+  e.g. `POST /v1/public-catalog/compare {"catalogItemIds":["pc_a","pc_b"]}` -> `{"items":[...],"priceComparison":{"state":"comparable", ...}}`
+- `GET /v1/session-context` -- Get bounded authenticated local session context
+  e.g. `GET /v1/session-context` -> `{"mode":"local_alpha","scopes":["runs:execute", ...],"role":"member"}`
+- `GET /v1/whoami` -- Current principal's membership, organization, tool grants and machine sessions
+  e.g. `GET /v1/whoami` -> `{"workspaceId":"...","membershipId":"...","role":"owner"}`
+- `GET /v1/openapi.json` -- Get this contract
+  e.g. `GET /v1/openapi.json` -> `the full OpenAPI 3.1 document (also public at /openapi.json, no bearer token needed)`
+
+## Live providers
+
+Real providers with an approved, priced platform key -- callable right now with no connection of your own:
+
+- **Adyntel** -- 10 endpoints. Details: /catalog/providers/adyntel.md
+- **AI Ark** -- 21 endpoints, cheapest priced runs_now: `ai-ark-companies` ($0.0012 all-in). Details: /catalog/providers/ai-ark.md
+- **Akta** -- 14 endpoints, cheapest priced runs_now: `akta-news` ($0.0005 all-in). Details: /catalog/providers/akta.md
+- **AnyAPI** -- 37 endpoints, cheapest priced runs_now: `anyapi-run-twitter-profile` ($0.00022 all-in). Details: /catalog/providers/anyapi.md
+- **Anysite** -- 121 endpoints, cheapest priced runs_now: `anysite-api-minnesota-companies-search` ($0.000037 all-in). Details: /catalog/providers/anysite.md
+- **Apify** -- 55 endpoints, cheapest priced runs_now: `apify-dataset-items` ($0.0001 all-in). Details: /catalog/providers/apify.md
+- **Aviato** -- 42 endpoints, cheapest priced runs_now: `aviato-images-token` ($0.0020 all-in). Details: /catalog/providers/aviato.md
+- **BounceBan** -- 12 endpoints, cheapest priced runs_now: `bounceban-verify` ($0.0040 all-in). Details: /catalog/providers/bounceban.md
+- **Brave Search** -- 6 endpoints, cheapest priced runs_now: `brave-search-res-news-search` ($0.0050 all-in). Details: /catalog/providers/brave-search.md
+- **Bright Data** -- 14 endpoints, cheapest priced runs_now: `brightdata-amazon-product` ($0.0015 all-in). Details: /catalog/providers/brightdata.md
+- **Browser Use** -- 32 endpoints. Details: /catalog/providers/browser-use.md
+- **BuiltWith** -- 12 endpoints, cheapest priced runs_now: `builtwith-api-json` ($0.0495 all-in). Details: /catalog/providers/builtwith.md
+- **Cloro** -- 12 endpoints, cheapest priced runs_now: `cloro-monitor-google` ($0.0040 all-in). Details: /catalog/providers/cloro.md
+- **CloudConvert** -- 15 endpoints, cheapest priced runs_now: `cloudconvert-archive` ($0.0080 all-in). Details: /catalog/providers/cloudconvert.md
+- **CoinMarketCap** -- 18 endpoints, cheapest priced runs_now: `coinmarketcap-cryptocurrency-categories` ($0.000193 all-in). Details: /catalog/providers/coinmarketcap.md
+- **CompanyEnrich** -- 47 endpoints, cheapest priced runs_now: `companyenrich-companies-enrich-bulk` ($0.0098 all-in). Details: /catalog/providers/companyenrich.md
+- **Context.dev** -- 79 endpoints, cheapest priced runs_now: `context-dev-news-search` ($0.00025 all-in). Details: /catalog/providers/context-dev.md
+- **Coresignal** -- 26 endpoints, cheapest priced runs_now: `coresignal-employee-post-collect` ($0.0196 all-in). Details: /catalog/providers/coresignal.md
+- **DataForSEO** -- 329 endpoints, cheapest priced runs_now: `dataforseo-on-page-content-parsing-live-ai` ($0.000125 all-in). Details: /catalog/providers/dataforseo.md
+- **Datagma** -- 15 endpoints, cheapest priced runs_now: `datagma-find-email` ($0.01633 all-in). Details: /catalog/providers/datagma.md
+- **Deepgram** -- 50 endpoints, cheapest priced runs_now: `deepgram-speak` ($0.00003 all-in). Details: /catalog/providers/deepgram.md
+- **Diffbot** -- 10 endpoints, cheapest priced runs_now: `diffbot-job` ($0.001196 all-in). Details: /catalog/providers/diffbot.md
+- **Dropleads** -- 14 endpoints, cheapest priced runs_now: `dropleads-company-enrich` ($0.00145 all-in). Details: /catalog/providers/dropleads.md
+- **ElevenLabs** -- 3 endpoints, cheapest priced runs_now: `elevenlabs-text-to-speech-audio` ($0.00008 all-in). Details: /catalog/providers/elevenlabs.md
+- **Enrichlayer** -- 29 endpoints, cheapest priced runs_now: `enrichlayer-api-company-employees-count` ($0.0264 all-in). Details: /catalog/providers/enrichlayer.md
+- **EODHD** -- 88 endpoints, cheapest priced runs_now: `eodhd-calendar-dividends` ($0.000033 all-in). Details: /catalog/providers/eodhd.md
+- **Exa** -- 65 endpoints, cheapest priced runs_now: `exa-contents` ($0.0010 all-in). Details: /catalog/providers/exa.md
+- **Fetchin** -- 11 endpoints, cheapest priced runs_now: `fetchin-company` ($0.0015 all-in). Details: /catalog/providers/fetchin.md
+- **Findymail** -- 36 endpoints, cheapest priced runs_now: `findymail-api-search-company` ($0.0198 all-in). Details: /catalog/providers/findymail.md
+- **Firecrawl** -- 18 endpoints, cheapest priced runs_now: `firecrawl-extract` ($0.000333 all-in). Details: /catalog/providers/firecrawl.md
+- **FullEnrich** -- 10 endpoints, cheapest priced runs_now: `fullenrich-api-company-lookup` ($0.0160 all-in). Details: /catalog/providers/fullenrich.md
+- **Fundable** -- 19 endpoints, cheapest priced runs_now: `fundable-company-search` ($0.0050 all-in). Details: /catalog/providers/fundable.md
+- **HarvestAPI** -- 29 endpoints, cheapest priced runs_now: `harvestapi-geo-id-search` ($0.0010 all-in). Details: /catalog/providers/harvestapi.md
+- **Hunter** -- 184 endpoints, cheapest priced runs_now: `hunter-domain-search-get` ($0.00245 all-in). Details: /catalog/providers/hunter.md
+- **Hyperbrowser** -- 84 endpoints. Details: /catalog/providers/hyperbrowser.md
+- **Icypeas** -- 19 endpoints, cheapest priced runs_now: `icypeas-find-companies` ($0.00038 all-in). Details: /catalog/providers/icypeas.md
+- **IPinfo** -- 48 endpoints, cheapest priced runs_now: `ipinfo-city-2` ($0.0005 all-in). Details: /catalog/providers/ipinfo.md
+- **Jina Reader API** -- 5 endpoints, cheapest priced runs_now: `jina-classify` ($0.0002 all-in). Details: /catalog/providers/jina.md
+- **Just One API** -- 58 endpoints, cheapest priced runs_now: `justoneapi-api-xiaohongshu-share-url-transfer` ($0.01476 all-in). Details: /catalog/providers/justoneapi.md
+- **Keenable** -- 2 endpoints, cheapest priced runs_now: `keenable-fetch` ($0.0040 all-in). Details: /catalog/providers/keenable.md
+- **Kitt AI** -- 4 endpoints, cheapest priced runs_now: `kittai-verify-email` ($0.0015 all-in). Details: /catalog/providers/kittai.md
+- **LeadMagic** -- 8 endpoints, cheapest priced runs_now: `leadmagic-people-employee-finder` ($0.00099 all-in). Details: /catalog/providers/leadmagic.md
+- **Limadata** -- 15 endpoints, cheapest priced runs_now: `limadata-api-database-search-companies` ($0.0020 all-in). Details: /catalog/providers/limadata.md
+- **Linkup** -- 13 endpoints, cheapest priced runs_now: `linkup-fetch` ($0.0010 all-in). Details: /catalog/providers/linkup.md
+- **Lusha** -- 7 endpoints, cheapest priced runs_now: `lusha-companies-prospecting` ($0.0050 all-in). Details: /catalog/providers/lusha.md
+- **Marketstack** -- 46 endpoints, cheapest priced runs_now: `marketstack-commodities` ($0.000899 all-in). Details: /catalog/providers/marketstack.md
+- **MillionVerifier** -- 2 endpoints, cheapest priced runs_now: `millionverifier-verify` ($0.00178 all-in). Details: /catalog/providers/millionverifier.md
+- **NewsData.io API** -- 12 endpoints, cheapest priced runs_now: `newsdata-io-1-crypto` ($0.0100 all-in). Details: /catalog/providers/newsdata-io.md
+- **Octen** -- 4 endpoints, cheapest priced runs_now: `octen-web-search` ($0.0060 all-in). Details: /catalog/providers/octen.md
+- **Olostep** -- 43 endpoints, cheapest priced runs_now: `olostep-crawl-start` ($0.0018 all-in). Details: /catalog/providers/olostep.md
+- **OpenCage** -- 4 endpoints, cheapest priced runs_now: `opencage-json` ($0.000167 all-in). Details: /catalog/providers/opencage.md
+- **Openmart** -- 17 endpoints, cheapest priced runs_now: `openmart-search` ($0.00894 all-in). Details: /catalog/providers/openmart.md
+- **OpenRouter** -- 2 endpoints, cheapest priced runs_now: `openrouter-chat` ($0.000006 all-in). Details: /catalog/providers/openrouter.md
+- **Parallel** -- 35 endpoints, cheapest priced runs_now: `parallel-extract` ($0.0010 all-in). Details: /catalog/providers/parallel.md
+- **People Data Labs** -- 22 endpoints, cheapest priced runs_now: `people-data-labs-company-enrich` ($0.2800 all-in). Details: /catalog/providers/people-data-labs.md
+- **PredictLeads** -- 32 endpoints, cheapest priced runs_now: `predictleads-companies-connections` ($0.0100 all-in). Details: /catalog/providers/predictleads.md
+- **Prospeo** -- 8 endpoints, cheapest priced runs_now: `prospeo-bulk-enrich-company` ($0.0390 all-in). Details: /catalog/providers/prospeo.md
+- **QuickEnrich** -- 13 endpoints, cheapest priced runs_now: `quickenrich-api-companies-company-finder` ($0.00483 all-in). Details: /catalog/providers/quickenrich.md
+- **Replicate HTTP API** -- 38 endpoints, cheapest priced runs_now: `replicate-models-predictions` ($0.0030 all-in). Details: /catalog/providers/replicate.md
+- **ScrapeCreators** -- 189 endpoints, cheapest priced runs_now: `scrapecreators-google-advertisers-search` ($0.00188 all-in). Details: /catalog/providers/scrapecreators.md
+- **ScrapeGraphAI** -- 14 endpoints, cheapest priced runs_now: `scrapegraphai-scrape` ($0.0020 all-in). Details: /catalog/providers/scrapegraphai.md
+- **Scrubby** -- 5 endpoints, cheapest priced runs_now: `scrubby-validate` ($0.0078 all-in). Details: /catalog/providers/scrubby.md
+- **SearchAPI.io** -- 138 endpoints, cheapest priced runs_now: `searchapi-io-linkedin-ad-library` ($0.0040 all-in). Details: /catalog/providers/searchapi-io.md
+- **SerpApi** -- 32 endpoints, cheapest priced runs_now: `serpapi-amazon` ($0.0250 all-in). Details: /catalog/providers/serpapi.md
+- **Serper** -- 13 endpoints, cheapest priced runs_now: `serper-images` ($0.0010 all-in). Details: /catalog/providers/serper.md
+- **Signalbase** -- 17 endpoints, cheapest priced runs_now: `signalbase-companies` ($0.1080 all-in). Details: /catalog/providers/signalbase.md
+- **Steel API** -- 45 endpoints, cheapest priced runs_now: `steel-pdf` ($0.0050 all-in). Details: /catalog/providers/steel.md
+- **Sumble** -- 29 endpoints, cheapest priced runs_now: `sumble-jobs-title-lookup` ($0.0001 all-in). Details: /catalog/providers/sumble.md
+- **Tavily Search and Extract API** -- 9 endpoints, cheapest priced runs_now: `tavily-map` ($0.0008 all-in). Details: /catalog/providers/tavily.md
+- **The Companies API** -- 44 endpoints, cheapest priced runs_now: `thecompaniesapi-companies-ask` ($0.0019 all-in). Details: /catalog/providers/thecompaniesapi.md
+- **TheirStack** -- 55 endpoints, cheapest priced runs_now: `theirstack-jobs-search` ($0.0327 all-in). Details: /catalog/providers/theirstack.md
+- **TikHub** -- 1064 endpoints, cheapest priced runs_now: `tikhub-api-douyin-app-fetch-brand-hot-search-list` ($0.0010 all-in). Details: /catalog/providers/tikhub.md
+- **TinyFish Search API** -- 33 endpoints, cheapest priced runs_now: `tinyfish-automation-run` ($0.0160 all-in). Details: /catalog/providers/tinyfish.md
+- **Tomba** -- 157 endpoints, cheapest priced runs_now: `tomba-companies-find` ($0.0089 all-in). Details: /catalog/providers/tomba.md
+- **Trestle** -- 9 endpoints, cheapest priced runs_now: `trestleiq-address-validation` ($0.0100 all-in). Details: /catalog/providers/trestleiq.md
+- **TypeSafe (Jev)** -- 3 endpoints, cheapest priced runs_now: `typesafe-noul` ($0.00029 all-in). Details: /catalog/providers/typesafe.md
+- **You.com** -- 9 endpoints, cheapest priced runs_now: `youcom-contents` ($0.0010 all-in). Details: /catalog/providers/youcom.md
+- **ZeroBounce** -- 8 endpoints, cheapest priced runs_now: `zerobounce-guessformat` ($0.0100 all-in). Details: /catalog/providers/zerobounce.md
+- **Zyte API** -- 5 endpoints, cheapest priced runs_now: `zyte-raw-html` ($0.00044 all-in). Details: /catalog/providers/zyte-api.md
+
+## Error shapes
+
+REST errors are RFC 9457-shaped: a JSON body `{error: {code, message, requestId}}` plus a
+status code, with a few routes adding fields alongside `error` (see 402 and 429 below).
+
+- 400 validation_error -- the request body or query failed schema validation.
+- 401 unauthorized -- missing or invalid bearer token.
+- 402 insufficient_balance -- POST /v1/runs when the reservation would exceed the workspace's
+  available balance. Body: the error envelope (`error.code` is `insufficient_balance`) plus
+  `balanceMicros`, `estimatedCostMicros`, `topUpUrl`, and `topUp` { minimumUsd, suggestedUsd,
+  checkoutUrl, dashboardUrl, message }: show `topUp.checkoutUrl` (Stripe's hosted payment page,
+  $5 minimum) or `topUp.dashboardUrl` to the customer, then retry with a new idempotencyKey
+  once they have paid. This is a pre-admission refusal, one of
+  three outcome classes -- see Settlement outcomes below for the other two.
+- 403 forbidden -- token lacks the scope the route requires.
+- 403 platform_operator_required -- route is restricted to a platform operator token.
+- 404 not_found -- unknown runId, connectionId, or catalog item. NOT an unknown endpointId on
+  POST /v1/runs, though -- that (and any other pre-dispatch denial, e.g. the run's own input
+  failing the endpoint's schema) still answers 201 with status:"failed" and a populated
+  `error`; see Settlement outcomes below. A 201 can carry status:"failed" -- check `status`
+  and `error`, never the HTTP status code alone.
+- 409 idempotency_conflict -- reusing an idempotencyKey with a DIFFERENT endpointId/input than
+  the first call that used it (either a genuine concurrent race on the same key, or a later
+  call that changed the body) -- see Idempotency below for what happens on a matching retry.
+- 422 rows_mode_unsupported -- the request needs a fleet capability this storage mode does not
+  provide. Body adds a `reason` field.
+- 429 too_many_inflight_runs -- POST /v1/runs when this workspace already has
+  `limit` runs in flight (8 unless the operator changed it). Body: the error envelope
+  (`error.code` is `too_many_inflight_runs`) plus `inflight`, `limit`, `retryAfterSeconds`,
+  and a `retry-after` header.
+- 429 rate_limit_exceeded -- a token-bucket limiter rejected the request. Headers:
+  `x-ratelimit-limit`, `x-ratelimit-remaining`, `retry-after`. A network policy keyed by
+  source address covers every request before authentication (large burst, liveness probes
+  to /health and /ready exempt); once authenticated, each tenant gets its own bucket, 60
+  burst and 10 per second by default.
+- 500 internal_error -- unhandled server error.
+- 503 catalog_loading -- the catalog has not finished loading yet. Retry with the `retry-after`
+  header.
+- 503 storage_busy -- the storage backend is temporarily overloaded. Body adds
+  `retryAfterSeconds`, and a `retry-after` header is sent too.
+- 503 billing_unavailable -- a billing route was called but billing is not enabled on this
+  gateway (see Pricing below).
+- 503 runtime_bridge_timeout -- the storage bridge did not respond in time. Body adds
+  `retryAfterSeconds`, and a `retry-after` header is sent too.
+
+
+## Settlement outcomes
+
+Once a run is admitted (past the pre-admission HTTP refusals above -- 402, 403, 422, 429,
+and the rest, none of which place a hold or charge anything), its money outcome is one of
+three classes, never a blanket $0:
+
+- Definitive failure -- the provider or the run pipeline reached a final answer (whoseError
+  provider, gateway, or customer). The hold is released and the run settles at $0 or the
+  provider's reported cost, whichever actually applies. A run's own failure never surfaces as
+  an HTTP error -- POST /v1/runs (without `wait`, or past its wait window) returns 201 with
+  status:"queued", and the run settles to status:"failed" with an `error` object shaped
+  `{ code, providerStatus, message, requestId, whoseError: "provider"|"gateway"|"customer",
+  retryable, retryHint }`.
+- Uncertain outcome -- the provider call may have gone out but the result could not be
+  confirmed (for example a worker died mid-flight). The run is parked at
+  status:"reconciliation_pending": the hold is RETAINED, not released, and the evidence
+  gathered so far is kept until a platform operator reviews it and settles the run by hand.
+
+Check `status` and `error`, not the HTTP status, to see which class applies.
+
+## Idempotency
+
+Every POST /v1/runs and MCP `run` call requires `idempotencyKey`. Retrying with the SAME key
+and the IDENTICAL request body -- for this workspace, against this endpoint -- always returns
+the original run (whatever its status, including one still in flight), stamped
+`replayed: true`, with no re-execution and no new charge. This is what makes it safe to retry
+after a dropped connection with no risk of double-charging or double-running. Reuse the SAME
+key with a DIFFERENT endpointId or input, though, and you get 409 idempotency_conflict instead
+-- looot never silently applies the new body to the old run. Use a fresh key per logical call.
+
+## Wait
+
+Both MCP `run` and REST POST /v1/runs support inline waiting, the same way: pass `wait`
+seconds (REST: `?wait=20` or `"wait":20` in the body; MCP: `wait: 20` in the tool arguments)
+and the call blocks, returning the settled result directly once the run finishes within that
+window -- default 20 s, max 60 s. Past the window (or with `wait: 0` / `?wait=false`, or wait
+omitted on REST), you get the queued/running run back immediately instead; poll `runs_get` /
+GET /v1/runs/{runId} yourself. MCP's `run` waits by default (20 s) when `wait` is omitted --
+REST does NOT: omitting `wait` on REST returns 201 queued/running immediately, matching this
+route's pre-`wait` behaviour. Prefer `?wait=20` on REST for the one-call, treg-style feel.
+
+## Access states
+
+Every catalog row/card carries `access`: `"runs_now"` (keyless, or a platform key already
+exists -- call it immediately), `"needs_your_account"` (the endpoint acts on YOUR OWN account
+for a provider like Instantly/Gmail/LinkedIn/Meta Ads -- POST /v1/connections first), or
+`"coming_soon"` (a real provider registered with no platform key yet).
+
+## Fallback
+
+Add `fallback` to a run (REST body, MCP `run`, `looot run --fallback`) to let it move to the
+next provider of the SAME job when one misses or fails. `true` takes every default, or send
+`{enabled, maxAttempts (1-10, default 3), maxCostUsd, prefer (cheapest|reliable|fastest|
+balanced), exclude (endpoint or provider ids, max 50), stopAtFirstMiss (default false)}`.
+The endpoint you named runs first; the job's other providers follow in `prefer` order.
+Send `endpointId: "job:<job id>"` (where the gateway has it turned on) to let looot pick the
+first provider of the job, in `prefer` order, that can run now and accepts your input. The
+run's endpointId is that provider; `requestedJob` names the job, the pick and why.
+- Money: ONE hold for the whole route (at most maxCostUsd; default the sum of the first
+  maxAttempts prices). Only attempts that ran are charged. A provider that bills a "not
+  found" is charged and listed. Errors, 402s and rejected calls are never charged. A provider
+  that would pass maxCostUsd is skipped and the walk goes on to cheaper ones (`capped`).
+- Moves on after: a miss (an empty answer, a declared not-found, a verifier's unknown), a 5xx
+  or timeout (at most 2 errors), a 429, or looot's own account problem with the provider (402,
+  our key's 401/403: `skipped`). Stops at: a hit, a weak hit (the provider flagged it), your
+  input rejected (400/422: `rejected`, the provider's text names the field), your own key
+  rejected, or an async job still running (`pending`).
+- Every run carries `outcome` (hit|weak|miss|error|rejected|skipped|pending) and
+  `outcomeReason`. A fallback run also carries `route`: {servedBy, outcome, chargedUsd,
+  capped, attempts[{n, endpointId, provider, outcome, status, chargedUsd, ms, reason, verdict?}],
+  skipped[{endpointId, code, reason}], summary}. GET /v1/runs/{id}/attempts lists each attempt
+  with its own receipt. Only lookups fall through: an endpoint that may change something is
+  never retried on another provider.
+- A completed run of email verify/find, phone find, company enrich, scrape markdown or backlinks
+  summary can also carry `normalized` next to `result` (when the gateway turns it on): {job,
+  endpointId, fields, missing, ambiguous, unmapped, providerValues, verdict, verdictReason,
+  mapVerified}. Email status is valid|invalid|catch_all|risky|unknown. Absent, never null,
+  when it does not apply; `result` and `outcome` are unchanged.
+
+## Pricing
+
+Prepaid workspace balance. A run reserves its endpoint's estimated cost up front, then one
+of three outcomes applies: refused before admission holds and charges nothing; a definitive
+failure releases the hold and settles at $0 or the provider's evidenced cost; an uncertain
+outcome parks as reconciliation_pending with the hold retained until an operator decision.
+New workspaces start at $0; GET /v1/balance shows topUpLink.minimumUsd.
+POST /v1/top-ups creates a Stripe Checkout session ($5-$500); out of credits, 402 carries
+topUp.checkoutUrl (Stripe's hosted page) and topUp.message to show the customer.
+Every endpoint's exact price formula is in its GET /v1/operations/{endpointId} response and
+in its /catalog/{id}.md card.
+
+## Glossary
+
+- **endpoint** -- one provider operation, e.g. `parity-tomba-companies-enrich`.
+- **capability / job** -- the canonical task an endpoint performs, e.g. `people.email.verify`,
+  shared across every provider that does that job (its `siblings`).
+- **run** -- one execution of an endpoint: reserve estimated cost -> execute -> settle actual
+  cost. Identified by `runId` (`run_...`), or `workflowRunId` (`wfr_...`) for a workflow.
+- **workspace** -- the tenant unit; every token, run, connection, and balance belongs to one.
+- **mock** -- a fixture/demo provider used for testing; real providers rank above these in
+  search and discover.
