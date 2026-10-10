@@ -42,6 +42,16 @@ Each repo rebuilds a paid product on one looot key, with a demo mode, a headless
 | [looot-battlecards](https://github.com/loootai/looot-battlecards) | Klue, Crayon | Competitor battlecards with a source link and date on every claim. | $0.076 for 5 competitors |
 | [looot-mentions](https://github.com/loootai/looot-mentions) | Brand24, Mention | Brand and keyword mentions from six sources, with sentiment and a daily digest. | $0.0066 per keyword per run |
 
+## Builds
+
+One dated build a day, each with its data and the steps to reproduce it. looot made these comparisons.
+
+| Date | Build | Result |
+| --- | --- | --- |
+| 2026-10-10 | [One looot entry vs six MCP servers](builds/2026-10-10-one-key-six-servers/README.md) | Tool-definition size read from each server's tools/list |
+| 2026-10-11 | [One Google search at 7 providers](builds/2026-10-11-google-search-price-spread/README.md) | $0.0009 to $0.025 a call, read from the free catalog |
+| 2026-10-12 | [/looot-price slash command](builds/2026-10-12-looot-price-command/README.md) | Every provider and price for a task, nothing run |
+
 ## Quick start
 
 ```bash
