@@ -29,7 +29,7 @@ Prices are the cheapest listed endpoint per job in the free public catalog, as o
 
 ## Open-source alternatives built on looot
 
-Each repo rebuilds a paid product on one looot key, with a demo mode, a headless CLI and the price shown before every run. A looot-warm-leads repo (Gojiberry) is in progress. No paid looot run was made for any of them yet, so parsers come from docs and fixtures. Costs are list prices from each README.
+Each repo rebuilds a paid product on one looot key, with a demo mode, a headless CLI and the price shown before every run. No paid looot run was made for any of them yet, so parsers come from docs and fixtures. Costs are list prices from each README.
 
 | Repo | Replaces | What it does | Typical run at list price |
 | --- | --- | --- | --- |
@@ -43,6 +43,7 @@ Each repo rebuilds a paid product on one looot key, with a demo mode, a headless
 | [looot-reviews](https://github.com/loootai/looot-reviews) | ReviewTrackers | Google Maps, App Store, Google Play and Tripadvisor reviews grouped into themes. | up to $0.015 for 5 companies on Google Maps |
 | [looot-battlecards](https://github.com/loootai/looot-battlecards) | Klue, Crayon | Competitor battlecards with a source link and date on every claim. | $0.076 for 5 competitors |
 | [looot-mentions](https://github.com/loootai/looot-mentions) | Brand24, Mention | Brand and keyword mentions from six sources, with sentiment and a daily digest. | $0.0066 per keyword per run |
+| [looot-warm-leads](https://github.com/loootai/looot-warm-leads) | Gojiberry | Warm leads from LinkedIn intent signals, scored against your ICP with each point itemised, verified emails, drafted messages, CSV and Instantly export. LinkedIn sending is optional, off by default, through your own Unipile account. | up to $0.25 per run (new role only), $0.65 with hiring and funding triggers |
 
 ## Builds
 
