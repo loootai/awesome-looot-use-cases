@@ -1,0 +1,25 @@
+<!doctype html><meta charset="utf-8"><title>Google search price spread</title>
+<style>
+:root{--ink:#0B2E22;--deep:#0B4A35;--green:#12A06A;--paper:#F7F8F5}
+*{box-sizing:border-box}body{margin:0;width:1600px;height:900px;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;padding:56px 72px;position:relative}
+h1{font-size:44px;line-height:1.1;margin:0 0 10px;color:var(--deep);letter-spacing:-.5px}
+.sub{font-size:21px;margin:0 0 34px;max-width:1350px;color:#35574a}
+.row{display:grid;grid-template-columns:330px 1fr 190px;align-items:center;gap:20px;height:66px}
+.lab b{display:block;font-size:24px}.lab span{font-size:15px;color:#4d6b5f}
+.track{background:#e8ece6;height:34px;border-radius:4px}
+.bar{height:100%;border-radius:4px}.bar.lo{background:var(--green)}.bar.mid{background:var(--deep)}.bar.hi{background:var(--ink)}
+.val{font-size:26px;font-weight:700;text-align:right}.val small{display:block;font-size:15px;font-weight:500;color:#4d6b5f}
+.foot{position:absolute;left:72px;right:72px;bottom:40px;font-size:15px;color:#4d6b5f;display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+.foot p{margin:0;max-width:1180px;line-height:1.45}img{height:44px}
+</style>
+<h1>One Google search, 27.8x between cheapest and dearest</h1>
+<p class="sub">looot list price per call for the job google.serp.organic, 7 providers, 12 endpoints, read from the free catalog on 2026-10-10 (revision 101897). Nothing was run. A call is not always the same product, see the README.</p>
+<div class="row"><div class="lab"><b>anyapi</b><span>1 endpoint, price set 2026-09-30</span></div><div class="track"><div class="bar lo" style="width:3.6%"></div></div><div class="val">$0.0009<small>cheapest</small></div></div>
+<div class="row"><div class="lab"><b>serper</b><span>1 endpoint, price set 2026-10-05</span></div><div class="track"><div class="bar mid" style="width:4.0%"></div></div><div class="val">$0.001<small>x1.1</small></div></div>
+<div class="row"><div class="lab"><b>scrapecreators</b><span>1 endpoint, price set 2026-09-06</span></div><div class="track"><div class="bar mid" style="width:7.5%"></div></div><div class="val">$0.00188<small>x2.1</small></div></div>
+<div class="row"><div class="lab"><b>dataforseo</b><span>6 endpoints, price set 2026-09-16</span></div><div class="track"><div class="bar mid" style="width:8.0%"></div></div><div class="val">$0.002<small>x2.2</small></div></div>
+<div class="row"><div class="lab"><b>cloro</b><span>1 endpoint, price set 2026-09-30</span></div><div class="track"><div class="bar mid" style="width:16.0%"></div></div><div class="val">$0.004<small>x4.4</small></div></div>
+<div class="row"><div class="lab"><b>searchapi-io</b><span>1 endpoint, price set 2026-09-21</span></div><div class="track"><div class="bar mid" style="width:16.0%"></div></div><div class="val">$0.004<small>x4.4</small></div></div>
+<div class="row"><div class="lab"><b>serpapi</b><span>1 endpoint, price set 2026-10-05</span></div><div class="track"><div class="bar hi" style="width:100.0%"></div></div><div class="val">$0.025<small>x27.8</small></div></div>
+
+<div class="foot"><p>looot made this comparison from its own catalog. Prices are looot list prices, not each vendor's own pricing page. Providers differ in what one call returns, in rate limits and in plans. Data and steps: github.com/loootai/awesome-looot-use-cases</p><img src="wordmark.svg" alt="looot"></div>

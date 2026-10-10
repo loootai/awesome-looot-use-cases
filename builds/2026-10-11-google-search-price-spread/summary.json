@@ -1,0 +1,91 @@
+{
+ "catalog_revision": "101897",
+ "catalog_built_at": "2026-10-10T09:47:13.996Z",
+ "endpoints": 12,
+ "provider_count": 7,
+ "cheapest": {
+  "provider": "anyapi",
+  "endpoints": 1,
+  "min": 0.0009,
+  "max": 0.0009,
+  "price_effective": "2026-09-30"
+ },
+ "dearest": {
+  "provider": "serpapi",
+  "endpoints": 1,
+  "min": 0.025,
+  "max": 0.025,
+  "price_effective": "2026-10-05"
+ },
+ "spread_x": 27.8,
+ "median_provider_min": 0.002,
+ "per_1000_calls_usd": {
+  "anyapi": 0.9,
+  "serper": 1.0,
+  "scrapecreators": 1.88,
+  "dataforseo": 2.0,
+  "cloro": 4.0,
+  "searchapi-io": 4.0,
+  "serpapi": 25.0
+ },
+ "per_10000_calls_usd": {
+  "anyapi": 9.0,
+  "serper": 10.0,
+  "scrapecreators": 18.8,
+  "dataforseo": 20.0,
+  "cloro": 40.0,
+  "searchapi-io": 40.0,
+  "serpapi": 250.0
+ },
+ "providers": [
+  {
+   "provider": "anyapi",
+   "endpoints": 1,
+   "min": 0.0009,
+   "max": 0.0009,
+   "price_effective": "2026-09-30"
+  },
+  {
+   "provider": "serper",
+   "endpoints": 1,
+   "min": 0.001,
+   "max": 0.001,
+   "price_effective": "2026-10-05"
+  },
+  {
+   "provider": "scrapecreators",
+   "endpoints": 1,
+   "min": 0.00188,
+   "max": 0.00188,
+   "price_effective": "2026-09-06"
+  },
+  {
+   "provider": "dataforseo",
+   "endpoints": 6,
+   "min": 0.002,
+   "max": 0.002,
+   "price_effective": "2026-09-16"
+  },
+  {
+   "provider": "cloro",
+   "endpoints": 1,
+   "min": 0.004,
+   "max": 0.004,
+   "price_effective": "2026-09-30"
+  },
+  {
+   "provider": "searchapi-io",
+   "endpoints": 1,
+   "min": 0.004,
+   "max": 0.004,
+   "price_effective": "2026-09-21"
+  },
+  {
+   "provider": "serpapi",
+   "endpoints": 1,
+   "min": 0.025,
+   "max": 0.025,
+   "price_effective": "2026-10-05"
+  }
+ ]
+}

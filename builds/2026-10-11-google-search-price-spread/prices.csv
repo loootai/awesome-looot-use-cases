@@ -1,0 +1,13 @@
+provider,endpoint,price_usd_per_call,price_effective,verification
+anyapi,anyapi-run-google-search,0.0009,2026-09-30,unverified
+serper,serper-search,0.001,2026-10-05,unverified
+scrapecreators,scrapecreators-google-search,0.00188,2026-09-06,unverified
+dataforseo,dataforseo-google-organic-advanced,0.002,2026-09-16,unverified
+dataforseo,dataforseo-google-organic-html,0.002,2026-09-16,unverified
+dataforseo,dataforseo-google-organic-regular,0.002,2026-09-16,unverified
+dataforseo,dataforseo-serp-google-organic-live-advanced,0.002,2026-09-16,unverified
+dataforseo,dataforseo-serp-google-organic-live-html,0.002,2026-09-16,unverified
+dataforseo,dataforseo-serp-google-organic-live-regular,0.002,2026-09-16,unverified
+cloro,cloro-monitor-google,0.004,2026-09-30,unverified
+searchapi-io,searchapi-io-google,0.004,2026-09-21,unverified
+serpapi,serpapi-google,0.025,2026-10-05,unverified

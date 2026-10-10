@@ -1,0 +1,21 @@
+{
+ "revision": "101897",
+ "builtAt": "2026-10-10T09:47:13.996Z",
+ "totals": {
+  "categories": 16,
+  "platforms": 227,
+  "jobs": 2058,
+  "providers": 94,
+  "endpoints": 2590,
+  "runnableEndpoints": 2501
+ },
+ "job": {
+  "id": "google.serp.organic",
+  "title": "Get Google search results for a query or keyword",
+  "providerCount": 7,
+  "endpointCount": 12,
+  "runnableCount": 12,
+  "cheapestPerCall": 0.0009,
+  "cheapestPerResult": null
+ }
+}
