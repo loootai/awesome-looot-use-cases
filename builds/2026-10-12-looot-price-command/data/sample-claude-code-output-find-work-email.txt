@@ -1,0 +1,35 @@
+Task: "find a work email". looot public catalog, free read, nothing was run.
+25 endpoints in 2 jobs, best match first. Prices are looot list prices in USD.
+
+Capability people_email_find: 23 endpoints, 17 providers, $0.003598 to $0.25 per call (69.5x)
+
+| Provider | Endpoint | Price | Unit | Verified |
+| --- | --- | --- | --- | --- |
+| anysite | anysite-api-linkedin-user-email | $0.003598 | call | unverified |
+| quickenrich | quickenrich-api-employees-search | $0.00483 | call | unverified |
+| kittai | kittai-find-email | $0.005 | call | unverified |
+| tomba | tomba-email-finder | $0.0089 | call | unverified |
+| tomba | tomba-linkedin-finder | $0.0089 | call | unverified |
+| ai-ark | ai-ark-people-export-single | $0.010781 | call | unverified |
+| ai-ark | ai-ark-people-export-single-2 | $0.010781 | call | unverified |
+| anyapi | anyapi-run-linkedin-email | $0.011 | call | unverified |
+| dropleads | dropleads-email-finder | $0.0145 | call | unverified |
+| datagma | datagma-find-email | $0.01633 | call | unverified |
+| icypeas | icypeas-email-find | $0.019 | result | unverified |
+| leadmagic | leadmagic-people-email-finder | $0.0198 | call | unverified |
+| findymail | findymail-api-search-name | $0.0198 | call | unverified |
+| findymail | findymail-api-search-business-profile | $0.0198 | call | unverified |
+| limadata | limadata-api-find-email-work | $0.02 | call | unverified |
+| hunter | hunter-email-finder | $0.0245 | call | unverified |
+| limadata | limadata-api-find-email-work-linkedin | $0.06 | call | unverified |
+| enrichlayer | enrichlayer-api-profile-email | $0.0792 | call | unverified |
+| companyenrich | companyenrich-people-email | $0.098 | call | unverified |
+| anysite | anysite-api-emails-find | $0.14388 | call | unverified |
+| aviato | aviato-person-email | $0.15 | call | unverified |
+| anysite | anysite-api-linkedin-user-find-email-by-url | $0.17985 | call | unverified |
+| fundable | fundable-person-email | $0.25 | call | unverified |
+
+Capability people_enrich: 2 endpoints, 2 providers, $0.039 to $0.875 per call (22.4x)
+A price is per call at the listed unit. What a call returns differs by provider, so read the endpoint before you pick on price alone.
+
+anysite is the cheapest at $0.003598 per call and fundable the most expensive at $0.25, a 69.5x gap. Before you pick on price, check what input each endpoint needs, because the cheapest one works from a LinkedIn profile while others like tomba-email-finder and hunter-email-finder take a name and company domain, and every row here is unverified. To go ahead with the cheapest, the endpoint id is `anysite-api-linkedin-user-email`.

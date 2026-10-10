@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>looot-price</title>
+<style>:root{--ink:#0B2E22;--deep:#0B4A35;--green:#12A06A;--paper:#F7F8F5}
+*{box-sizing:border-box}body{margin:0;width:1600px;height:900px;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;padding:44px 72px;position:relative}
+h1{font-size:40px;margin:0 0 6px;color:var(--deep);letter-spacing:-.5px}.sub{font-size:20px;color:#35574a;margin:0 0 20px}
+pre{background:var(--ink);color:#e6f2ec;font:15.5px/1.38 ui-monospace,Menlo,monospace;padding:20px 26px;border-radius:8px;margin:0;white-space:pre-wrap;height:640px;overflow:hidden}
+.cmd{color:var(--green)}
+.foot{position:absolute;left:72px;right:72px;bottom:28px;font-size:15px;color:#4d6b5f;display:flex;justify-content:space-between;align-items:center}img{height:40px}</style>
+<h1>/looot-price: the price of a task, before anything runs</h1>
+<p class="sub">Real output from Claude Code, 2026-10-10, with the list of lower-ranked matches trimmed. One free read of the looot catalog. No sign-in, no run, $0 spent.</p>
+<pre><span class="cmd">&gt; /looot-price Google search results for a keyword</span>
+
+Task: &quot;Google search results for a keyword&quot;. looot public catalog, free read, nothing was run.
+25 endpoints in 12 jobs, best match first. Prices are looot list prices in USD.
+
+Capability google_serp_organic: 12 endpoints, 7 providers, $0.0009 to $0.025 per call (27.8x)
+| Provider | Endpoint | Price | Unit | Verified |
+| anyapi | anyapi-run-google-search | $0.0009 | call | unverified |
+| serper | serper-search | $0.001 | call | unverified |
+| scrapecreators | scrapecreators-google-search | $0.00188 | call | unverified |
+| dataforseo | dataforseo-google-organic-regular | $0.002 | call | unverified |
+| dataforseo | dataforseo-google-organic-advanced | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-advanced | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-regular | $0.002 | call | unverified |
+| dataforseo | dataforseo-google-organic-html | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-html | $0.002 | call | unverified |
+| searchapi-io | searchapi-io-google | $0.004 | call | unverified |
+| cloro | cloro-monitor-google | $0.004 | call | unverified |
+| serpapi | serpapi-google | $0.025 | call | unverified |
+
+Capability google_keywords_suggestions: 1 endpoint, 1 provider
+Capability serp_google_dataset-search_live_advanced: 1 endpoint, 1 provider
+A price is per call at the listed unit. What a call returns differs by provider, so read the endpoint before you pick on price alone.
+
+The cheapest is anyapi at $0.0009 per call and the most expensive is serpapi at $0.025, a 27.8x gap. Before picking on price, check how many results one call returns and which fields come back, because a call that returns 10 organic links is not the same product as one that returns 100 plus ads, People Also Ask and the knowledge panel. Every row is also marked unverified, so the list price is all the catalog vouches for.</pre>
+<div class="foot"><span>looot made this. Prices are looot list prices. Command and script: github.com/loootai/awesome-looot-use-cases</span><img src="wordmark.svg" alt="looot"></div>

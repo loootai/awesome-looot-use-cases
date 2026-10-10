@@ -1,0 +1,33 @@
+Task: "Google search results for a keyword". looot public catalog, free read, nothing was run.
+25 endpoints in 12 jobs, best match first. Prices are looot list prices in USD.
+
+Capability google_serp_organic: 12 endpoints, 7 providers, $0.0009 to $0.025 per call (27.8x)
+| Provider | Endpoint | Price | Unit | Verified |
+| --- | --- | --- | --- | --- |
+| anyapi | anyapi-run-google-search | $0.0009 | call | unverified |
+| serper | serper-search | $0.001 | call | unverified |
+| scrapecreators | scrapecreators-google-search | $0.00188 | call | unverified |
+| dataforseo | dataforseo-google-organic-regular | $0.002 | call | unverified |
+| dataforseo | dataforseo-google-organic-advanced | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-advanced | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-regular | $0.002 | call | unverified |
+| dataforseo | dataforseo-google-organic-html | $0.002 | call | unverified |
+| dataforseo | dataforseo-serp-google-organic-live-html | $0.002 | call | unverified |
+| searchapi-io | searchapi-io-google | $0.004 | call | unverified |
+| cloro | cloro-monitor-google | $0.004 | call | unverified |
+| serpapi | serpapi-google | $0.025 | call | unverified |
+
+Capability google_keywords_suggestions: 1 endpoint, 1 provider
+Capability serp_google_dataset-search_live_advanced: 1 endpoint, 1 provider
+Capability dataforseolabs_google_search-intent_live: 1 endpoint, 1 provider
+Capability news_search: 3 endpoints, 2 providers, $0.00099 to $0.002 per call (2.0x)
+Capability maps_local_search: 1 endpoint, 1 provider
+Capability instagram_reels_search: 1 endpoint, 1 provider
+Capability linkedin_search_posts: 1 endpoint, 1 provider
+Capability serp_google_images_live_advanced: 1 endpoint, 1 provider
+Capability serp_google_local-finder_live_advanced: 1 endpoint, 1 provider
+Capability serp_google_local-finder_live_html: 1 endpoint, 1 provider
+Capability serp_google_news_live_advanced: 1 endpoint, 1 provider
+A price is per call at the listed unit. What a call returns differs by provider, so read the endpoint before you pick on price alone.
+
+The cheapest is anyapi at $0.0009 per call and the most expensive is serpapi at $0.025, a 27.8x gap. Before picking on price, check how many results one call returns and which fields come back, because a call that returns 10 organic links is not the same product as one that returns 100 plus ads, People Also Ask and the knowledge panel. Every row is also marked unverified, so the list price is all the catalog vouches for.
