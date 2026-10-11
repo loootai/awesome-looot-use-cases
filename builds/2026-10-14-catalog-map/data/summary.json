@@ -1,0 +1,529 @@
+{
+ "read_on": "2026-10-11",
+ "revision": "101897",
+ "built_at": "2026-10-11T09:52:14.275Z",
+ "digest": "sha256:359b2efac859b93d7b207b0e684d381af2b801f4bd9010270d3ed6074ca746c9",
+ "endpoints": 2590,
+ "providers": 94,
+ "jobs_in_overview": 2058,
+ "jobs_with_endpoints": 2059,
+ "unverified_endpoints": 2590,
+ "unit_call": 2400,
+ "unit_result": 190,
+ "free_endpoints": 186,
+ "jobs_with_2plus_providers": 119,
+ "jobs_with_3plus": 56,
+ "jobs_with_5plus": 20,
+ "jobs_with_one_provider": 1940,
+ "jobs_with_price_spread": 94,
+ "median_spread": 6.9350000000000005,
+ "spread_ge_2": 71,
+ "spread_ge_10": 43,
+ "spread_ge_100": 5,
+ "providers_for_half_of_endpoints": 3,
+ "top_providers": [
+  [
+   "tikhub",
+   967,
+   37.3
+  ],
+  [
+   "scrapecreators",
+   185,
+   44.5
+  ],
+  [
+   "dataforseo",
+   179,
+   51.4
+  ],
+  [
+   "searchapi-io",
+   137,
+   56.7
+  ],
+  [
+   "anysite",
+   119,
+   61.3
+  ],
+  [
+   "eodhd",
+   76,
+   64.2
+  ],
+  [
+   "justoneapi",
+   57,
+   66.4
+  ],
+  [
+   "companyenrich",
+   38,
+   67.9
+  ],
+  [
+   "anyapi",
+   36,
+   69.3
+  ],
+  [
+   "marketstack",
+   33,
+   70.5
+  ]
+ ],
+ "categories": [
+  [
+   "social",
+   1259
+  ],
+  [
+   "search",
+   213
+  ],
+  [
+   "web-data",
+   208
+  ],
+  [
+   "seo",
+   182
+  ],
+  [
+   "company",
+   157
+  ],
+  [
+   "contact-data",
+   136
+  ],
+  [
+   "finance",
+   109
+  ],
+  [
+   "contacts",
+   51
+  ],
+  [
+   "people",
+   49
+  ],
+  [
+   "productivity",
+   25
+  ],
+  [
+   "scrape",
+   23
+  ],
+  [
+   "outreach",
+   20
+  ],
+  [
+   "enrichment",
+   20
+  ],
+  [
+   "geo",
+   16
+  ],
+  [
+   "crm",
+   15
+  ],
+  [
+   "company-data",
+   15
+  ],
+  [
+   "seo-aeo",
+   11
+  ],
+  [
+   "crypto",
+   11
+  ],
+  [
+   "files",
+   9
+  ],
+  [
+   "signals",
+   9
+  ],
+  [
+   "web-tech",
+   8
+  ],
+  [
+   "news",
+   6
+  ],
+  [
+   "ai-models",
+   5
+  ],
+  [
+   "messaging",
+   5
+  ],
+  [
+   "jobs",
+   4
+  ],
+  [
+   "email-verification",
+   4
+  ],
+  [
+   "web",
+   4
+  ],
+  [
+   "speech",
+   3
+  ],
+  [
+   "analytics",
+   3
+  ],
+  [
+   "web-automation",
+   3
+  ],
+  [
+   "ai-data",
+   3
+  ],
+  [
+   "media",
+   2
+  ],
+  [
+   "developer",
+   2
+  ]
+ ],
+ "most_contested": [
+  {
+   "job": "company.enrich",
+   "title": "Enrich a company from its domain or name",
+   "category": "enrichment",
+   "endpoints": 26,
+   "providers": 20,
+   "priced_providers": 16,
+   "min_usd": 0.0019,
+   "max_usd": 0.196,
+   "spread": 103.16,
+   "cheapest": "thecompaniesapi",
+   "dearest": "coresignal"
+  },
+  {
+   "job": "company.search",
+   "title": "Find companies matching a filter",
+   "category": "enrichment",
+   "endpoints": 25,
+   "providers": 19,
+   "priced_providers": 5,
+   "min_usd": 0.0089,
+   "max_usd": 0.108,
+   "spread": 12.13,
+   "cheapest": "tomba",
+   "dearest": "signalbase"
+  },
+  {
+   "job": "people.search",
+   "title": "Find people matching a filter",
+   "category": "enrichment",
+   "endpoints": 27,
+   "providers": 17,
+   "priced_providers": 6,
+   "min_usd": 0.0196,
+   "max_usd": 0.1633,
+   "spread": 8.33,
+   "cheapest": "companyenrich",
+   "dearest": "datagma"
+  },
+  {
+   "job": "people.email.find",
+   "title": "Find a work email from a name and domain",
+   "category": "enrichment",
+   "endpoints": 23,
+   "providers": 17,
+   "priced_providers": 16,
+   "min_usd": 0.003598,
+   "max_usd": 0.25,
+   "spread": 69.48,
+   "cheapest": "anysite",
+   "dearest": "fundable"
+  },
+  {
+   "job": "web.search",
+   "title": "Search the web and get ranked results",
+   "category": "research",
+   "endpoints": 16,
+   "providers": 15,
+   "priced_providers": 11,
+   "min_usd": 0.002,
+   "max_usd": 0.009,
+   "spread": 4.5,
+   "cheapest": "limadata",
+   "dearest": "olostep"
+  },
+  {
+   "job": "people.email.verify",
+   "title": "Verify an email address is deliverable",
+   "category": "enrichment",
+   "endpoints": 15,
+   "providers": 13,
+   "priced_providers": 13,
+   "min_usd": 0.00145,
+   "max_usd": 0.14388,
+   "spread": 99.23,
+   "cheapest": "dropleads",
+   "dearest": "anysite"
+  },
+  {
+   "job": "people.phone.find",
+   "title": "Find a phone number for a person",
+   "category": "enrichment",
+   "endpoints": 13,
+   "providers": 12,
+   "priced_providers": 10,
+   "min_usd": 0.00483,
+   "max_usd": 0.7194,
+   "spread": 148.94,
+   "cheapest": "quickenrich",
+   "dearest": "anysite"
+  },
+  {
+   "job": "people.enrich.by-email",
+   "title": "Enrich a person from their email address",
+   "category": "enrichment",
+   "endpoints": 13,
+   "providers": 10,
+   "priced_providers": 9,
+   "min_usd": 0.003598,
+   "max_usd": 0.198,
+   "spread": 55.03,
+   "cheapest": "anysite",
+   "dearest": "leadmagic"
+  },
+  {
+   "job": "linkedin.person.profile",
+   "title": "Get a LinkedIn person profile",
+   "category": "social",
+   "endpoints": 11,
+   "providers": 10,
+   "priced_providers": 8,
+   "min_usd": 0.0012,
+   "max_usd": 0.0528,
+   "spread": 44.0,
+   "cheapest": "anyapi",
+   "dearest": "enrichlayer"
+  },
+  {
+   "job": "people.enrich",
+   "title": "Enrich a person from a name and company",
+   "category": "enrichment",
+   "endpoints": 15,
+   "providers": 10,
+   "priced_providers": 7,
+   "min_usd": 0.0029,
+   "max_usd": 0.32,
+   "spread": 110.34,
+   "cheapest": "dropleads",
+   "dearest": "limadata"
+  },
+  {
+   "job": "account.credits",
+   "title": "Credits account",
+   "category": "other",
+   "endpoints": 9,
+   "providers": 9,
+   "priced_providers": 0
+  },
+  {
+   "job": "web.scrape.markdown",
+   "title": "Scrape a web page into markdown",
+   "category": "scrapers",
+   "endpoints": 10,
+   "providers": 9,
+   "priced_providers": 7,
+   "min_usd": 0.0002,
+   "max_usd": 0.005,
+   "spread": 25.0,
+   "cheapest": "jina",
+   "dearest": "steel"
+  }
+ ],
+ "widest_spread_5plus": [
+  {
+   "job": "people.phone.find",
+   "title": "Find a phone number for a person",
+   "category": "enrichment",
+   "endpoints": 13,
+   "providers": 12,
+   "priced_providers": 10,
+   "min_usd": 0.00483,
+   "max_usd": 0.7194,
+   "spread": 148.94,
+   "cheapest": "quickenrich",
+   "dearest": "anysite"
+  },
+  {
+   "job": "people.enrich",
+   "title": "Enrich a person from a name and company",
+   "category": "enrichment",
+   "endpoints": 15,
+   "providers": 10,
+   "priced_providers": 7,
+   "min_usd": 0.0029,
+   "max_usd": 0.32,
+   "spread": 110.34,
+   "cheapest": "dropleads",
+   "dearest": "limadata"
+  },
+  {
+   "job": "jobs.search",
+   "title": "Search job listings",
+   "category": "enrichment",
+   "endpoints": 8,
+   "providers": 7,
+   "priced_providers": 4,
+   "min_usd": 0.0005,
+   "max_usd": 0.0528,
+   "spread": 105.6,
+   "cheapest": "anyapi",
+   "dearest": "enrichlayer"
+  },
+  {
+   "job": "company.enrich",
+   "title": "Enrich a company from its domain or name",
+   "category": "enrichment",
+   "endpoints": 26,
+   "providers": 20,
+   "priced_providers": 16,
+   "min_usd": 0.0019,
+   "max_usd": 0.196,
+   "spread": 103.16,
+   "cheapest": "thecompaniesapi",
+   "dearest": "coresignal"
+  },
+  {
+   "job": "people.email.verify",
+   "title": "Verify an email address is deliverable",
+   "category": "enrichment",
+   "endpoints": 15,
+   "providers": 13,
+   "priced_providers": 13,
+   "min_usd": 0.00145,
+   "max_usd": 0.14388,
+   "spread": 99.23,
+   "cheapest": "dropleads",
+   "dearest": "anysite"
+  },
+  {
+   "job": "people.email.find",
+   "title": "Find a work email from a name and domain",
+   "category": "enrichment",
+   "endpoints": 23,
+   "providers": 17,
+   "priced_providers": 16,
+   "min_usd": 0.003598,
+   "max_usd": 0.25,
+   "spread": 69.48,
+   "cheapest": "anysite",
+   "dearest": "fundable"
+  },
+  {
+   "job": "people.enrich.by-email",
+   "title": "Enrich a person from their email address",
+   "category": "enrichment",
+   "endpoints": 13,
+   "providers": 10,
+   "priced_providers": 9,
+   "min_usd": 0.003598,
+   "max_usd": 0.198,
+   "spread": 55.03,
+   "cheapest": "anysite",
+   "dearest": "leadmagic"
+  },
+  {
+   "job": "linkedin.person.profile",
+   "title": "Get a LinkedIn person profile",
+   "category": "social",
+   "endpoints": 11,
+   "providers": 10,
+   "priced_providers": 8,
+   "min_usd": 0.0012,
+   "max_usd": 0.0528,
+   "spread": 44.0,
+   "cheapest": "anyapi",
+   "dearest": "enrichlayer"
+  },
+  {
+   "job": "news.search",
+   "title": "Search the news for a topic",
+   "category": "research",
+   "endpoints": 9,
+   "providers": 8,
+   "priced_providers": 8,
+   "min_usd": 0.00099,
+   "max_usd": 0.03597,
+   "spread": 36.33,
+   "cheapest": "anyapi",
+   "dearest": "anysite"
+  },
+  {
+   "job": "google.serp.organic",
+   "title": "Get Google search results for a query or keyword",
+   "category": "search",
+   "endpoints": 12,
+   "providers": 7,
+   "priced_providers": 7,
+   "min_usd": 0.0009,
+   "max_usd": 0.025,
+   "spread": 27.78,
+   "cheapest": "anyapi",
+   "dearest": "serpapi"
+  },
+  {
+   "job": "maps.local.search",
+   "title": "Find local businesses on Google Maps",
+   "category": "maps",
+   "endpoints": 9,
+   "providers": 6,
+   "priced_providers": 5,
+   "min_usd": 0.001,
+   "max_usd": 0.025,
+   "spread": 25.0,
+   "cheapest": "serper",
+   "dearest": "serpapi"
+  },
+  {
+   "job": "web.scrape.markdown",
+   "title": "Scrape a web page into markdown",
+   "category": "scrapers",
+   "endpoints": 10,
+   "providers": 9,
+   "priced_providers": 7,
+   "min_usd": 0.0002,
+   "max_usd": 0.005,
+   "spread": 25.0,
+   "cheapest": "jina",
+   "dearest": "steel"
+  }
+ ],
+ "overview_totals": {
+  "categories": 16,
+  "platforms": 227,
+  "jobs": 2058,
+  "providers": 94,
+  "endpoints": 2590,
+  "runnableEndpoints": 2490
+ }
+}

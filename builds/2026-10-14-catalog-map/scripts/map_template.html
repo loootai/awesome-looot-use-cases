@@ -1,0 +1,68 @@
+<!doctype html><meta charset="utf-8"><title>looot catalog map</title>
+<style>
+:root{--ink:#0B2E22;--deep:#0B4A35;--green:#12A06A;--paper:#F7F8F5;--mute:#4d6b5f;--line:#dfe5dc}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;width:1600px;height:900px;overflow-x:auto;position:relative}
+header{padding:34px 56px 0}h1{font-size:38px;margin:0 0 6px;color:var(--deep);letter-spacing:-.5px}.sub{font-size:18px;color:#35574a;margin:0}
+main{display:grid;grid-template-columns:690px 400px 1fr;gap:26px;padding:20px 56px 0;height:760px}
+h2{font-size:15px;margin:0 0 8px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+#tm{width:690px;height:600px;position:relative;background:#e8ece6;border-radius:6px;overflow:hidden}
+.t{position:absolute;overflow:hidden;font-size:12px;line-height:1.15;color:#fff;border:1px solid var(--paper);cursor:pointer;padding:3px 4px}
+.t b{display:block;font-size:12px}.t.sel{outline:3px solid var(--green);outline-offset:-3px;z-index:2}
+.cl{position:absolute;font-size:12px;font-weight:700;color:var(--ink);background:rgba(247,248,245,.9);padding:1px 5px;pointer-events:none;z-index:3;border-radius:0 0 3px 0}
+#side{display:flex;flex-direction:column;height:690px}
+input[type=search]{font:16px inherit;padding:9px 12px;border:1px solid var(--line);border-radius:5px;width:100%;background:#fff}
+.opt{font-size:14px;color:var(--mute);margin:8px 0}#list{overflow:auto;flex:1;border-top:1px solid var(--line)}
+.j{padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}.j:hover,.j.sel{background:#e4efe8}.j small{display:block;color:var(--mute);font-size:12px}
+#det{height:690px;overflow:auto}#det h3{font-size:22px;margin:0 0 4px;color:var(--deep)}#det p{margin:0 0 12px;color:var(--mute);font-size:14px}
+.row{display:grid;grid-template-columns:130px 1fr 78px;gap:8px;align-items:center;font-size:13px;height:25px}
+.row .bar{height:13px;background:var(--green);border-radius:2px;min-width:2px}.row .bar.top{background:var(--ink)}.row b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row span:last-child{text-align:right}
+.foot{position:absolute;left:56px;right:56px;bottom:20px;font-size:13px;color:var(--mute);display:flex;justify-content:space-between;align-items:center}.foot img{height:34px}
+</style>
+<header><h1 id="h"></h1><p class="sub" id="s"></p></header>
+<main>
+<section><h2>Endpoints by category and provider (tile size = endpoints). Click a provider.</h2><div id="tm"></div></section>
+<section id="side"><h2>Jobs</h2><input id="q" type="search" placeholder="Search a job, for example email"><label class="opt"><input id="m" type="checkbox" checked> only jobs with 2 or more providers</label><div id="list"></div></section>
+<section id="det"></section>
+</main>
+<div class="foot"><span>looot made this from its own public catalog, read <span id="d"></span>. Prices are looot list prices. Same job does not always mean same product. Source: github.com/loootai/awesome-looot-use-cases</span><img src="wordmark.svg" alt="looot"></div>
+<script>
+const D=/*DATA*/null;
+const $=id=>document.getElementById(id);
+const usd=m=>m===0?"$0":"$"+(m/1e6).toPrecision(3).replace(/\.?0+$/,"");
+let prov=null,sel=null;
+$("h").textContent=D.endpoints.toLocaleString("en-US")+" endpoints, "+D.providers+" providers, "+D.jobs.length.toLocaleString("en-US")+" jobs";
+const multi=D.jobs.filter(j=>new Set(j.e.map(x=>x[0])).size>=2).length;
+$("s").textContent=multi+" jobs are sold by two or more providers. Pick one to see every price. Nothing here runs an endpoint.";
+$("d").textContent=D.readOn+" (revision "+D.revision+")";
+// squarified treemap
+function squarify(items,x,y,w,h){const out=[];let rest=items.slice().sort((a,b)=>b.v-a.v);const tot=rest.reduce((s,i)=>s+i.v,0);const sc=w*h/tot;rest.forEach(i=>i.a=i.v*sc);
+ function worst(row,side){const s=row.reduce((a,i)=>a+i.a,0);let mx=0,mn=1e18;row.forEach(i=>{mx=Math.max(mx,i.a);mn=Math.min(mn,i.a)});return Math.max(side*side*mx/(s*s),s*s/(side*side*mn))}
+ while(rest.length){const side=Math.min(w,h);let row=[rest[0]];let k=1;while(k<rest.length&&worst(row.concat(rest[k]),side)<=worst(row,side)){row.push(rest[k]);k++}
+  rest=rest.slice(row.length);const s=row.reduce((a,i)=>a+i.a,0);
+  if(w>=h){const cw=s/h;let yy=y;row.forEach(i=>{const hh=i.a/cw;out.push({d:i.d,x:x,y:yy,w:cw,h:hh});yy+=hh});x+=cw;w-=cw}
+  else{const ch=s/w;let xx=x;row.forEach(i=>{const ww=i.a/ch;out.push({d:i.d,x:xx,y:y,w:ww,h:ch});xx+=ww});y+=ch;h-=ch}}
+ return out}
+const pal=["#0B4A35","#12A06A","#0B2E22","#2b7a5b","#1a8a60","#0f6b4b","#3a9a78","#145a42","#238f69","#0d3d2d","#2f8a68","#1d6f52","#4aa985","#0a3b2c","#178b61","#256f55"];
+function drawTM(){const el=$("tm");el.innerHTML="";const W=690,H=600;
+ const cats=D.tm.map((c,i)=>({d:c,v:Object.values(c.p).reduce((a,b)=>a+b,0),i}));
+ squarify(cats,0,0,W,H).forEach((r,ci)=>{const idx=D.tm.indexOf(r.d);const cc=r.d;
+  const inner=squarify(Object.entries(cc.p).map(([p,n])=>({d:p,v:n})),r.x,r.y,r.w,r.h);
+  inner.forEach(t=>{const d=document.createElement("div");d.className="t"+(prov===t.d?" sel":"");d.style.cssText=`left:${t.x}px;top:${t.y}px;width:${t.w}px;height:${t.h}px;background:${pal[idx%pal.length]}`;
+   if(t.w>46&&t.h>26){const top=(r.w>90&&r.h>60&&Math.abs(t.y-r.y)<1&&Math.abs(t.x-r.x)<1);d.innerHTML=(top?"<br>":"")+"<b>"+t.d+"</b>"+(t.h>40?cc.p[t.d]:"")}d.title=t.d+": "+cc.p[t.d]+" endpoints in "+cc.t;d.onclick=()=>{prov=prov===t.d?null:t.d;drawTM();drawList()};el.appendChild(d)});
+  if(r.w>90&&r.h>60){const l=document.createElement("div");l.className="cl";l.style.cssText=`left:${r.x}px;top:${r.y}px`;l.textContent=cc.t;el.appendChild(l)}})}
+function drawList(){const q=$("q").value.toLowerCase(),m=$("m").checked;
+ let js=D.jobs.map(j=>({j,n:new Set(j.e.map(x=>x[0])).size})).filter(o=>(!m||o.n>=2)&&(!prov||o.j.e.some(x=>x[0]===prov))&&(!q||(o.j.t+" "+o.j.id).toLowerCase().includes(q)));
+ js.sort((a,b)=>b.n-a.n||a.j.id.localeCompare(b.j.id));$("list").innerHTML="";
+ js.slice(0,300).forEach(o=>{const d=document.createElement("div");d.className="j"+(sel===o.j.id?" sel":"");d.innerHTML=o.j.t+"<small>"+o.j.id+" , "+o.n+" provider"+(o.n>1?"s":"")+", "+o.j.e.length+" endpoints</small>";d.onclick=()=>show(o.j.id);$("list").appendChild(d)});
+ if(!js.length)$("list").textContent="No job matches.";}
+function show(id){sel=id;const j=D.jobs.find(x=>x.id===id);drawList();
+ const max=Math.max(...j.e.map(x=>x[2]),1);const priced=j.e.filter(x=>x[3]==="call"&&x[2]>0).map(x=>x[2]);
+ let h="<h3>"+j.t+"</h3><p>"+j.id+". "+j.e.length+" endpoints. ";
+ if(priced.length>1)h+="Per-call prices run "+usd(Math.min(...priced))+" to "+usd(Math.max(...priced))+", "+(Math.max(...priced)/Math.min(...priced)).toFixed(1)+" times. ";
+ h+="One row per endpoint, cheapest first. Bars are linear.</p>";
+ j.e.forEach((x,i)=>{h+=`<div class="row"><b title="${x[1]}">${x[0]}</b><span class="bar${i==j.e.length-1&&j.e.length>1?" top":""}" style="width:${Math.max(x[2]/max*100,0.6)}%" title="${x[1]}"></span><span>${usd(x[2])}${x[3]==="call"?"":"/"+x[3]}</span></div>`});
+ $("det").innerHTML=h}
+$("q").oninput=drawList;$("m").onchange=drawList;
+drawTM();drawList();
+const h=location.hash.slice(1);show(h&&D.jobs.some(j=>j.id===h)?h:"people.email.find");
+</script>
