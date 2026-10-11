@@ -1,0 +1,8 @@
+{
+ "read_on": "2026-10-11",
+ "owner_lookup_min": 0.03333333333333333,
+ "owner_lookup_max": 2.0,
+ "pdl_per_1000_matches": 280.0,
+ "pdl_over_cheapest_owner": 8400,
+ "pdl_over_looot_ipinfo": 560
+}

@@ -1,0 +1,48 @@
+Source: https://www.maxmind.com/en/geoip-api-web-services
+Read: 2026-10-11 with curl. Text below is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+  |
+        Country
+      |
+        City Plus
+      |Best Value|
+        Insights
+      |Data associated with the country of an IP address|$0.0001 per query**|
+        Everything in Country + location of an IP address to the zip or postal
+        code level and the associated ISP or organization
+      |$0.0003 per query**|
+        Everything in Country and City Plus, + Proxy Detection, and confidence
+        factors, user count and type, static IP score, demographic data, and
+        anonymizers
+      |$0.002 per query**|
+          Country
+        |
+          Data associated with the country of an IP address
+        |$0.0001 per query**|
+          City Plus
+        |
+          Everything in Country + location of an IP address to the zip or postal
+          code level and the associated ISP or organization
+        |$0.0003 per query**|Best Value|
+          Insights
+        |
+          Everything in Country and City Plus, + Proxy Detection, and confidence
+          factors, user count and type, static IP score, demographic data, and
+          anonymizers
+        |$0.002 per query**| Continent | Country | EU Country | Registered Country | EU Registered Country | Represented Country | 
+...
+IP Insights
+      |Choose amount|$25|$50|$100|$250|Other|Other amount|Equivalent queries|Please enter a whole dollar amount between $20 and $25,000.|
+    Purchase
+  |
+        Use the GeoIP web services in your commercial product or application
+        without the need for additional licensing. Purchase credit and pay as
+        you go.
+      |
+        **Discounts for higher volume of queries
+      |
+        If you estimate your volume of queries to be over $2,500 a month,
+        |contact us| to discuss
+        rates.
+      |
+        Try the GeoIP web services for

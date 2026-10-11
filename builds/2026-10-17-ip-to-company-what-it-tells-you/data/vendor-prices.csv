@@ -1,0 +1,9 @@
+vendor,product,usd,per_n_lookups,note,source_file
+ipapi.is,purchased credits,1,30000,"$1 buys 30,000 requests, credits never expire. Company string is returned without a key (see ip-samples)",ipapi-is-pricing-excerpt.txt
+ipgeolocation.io,Pro plan,79,1000000,"monthly billing, 1M credits a month. Whether the company field is on this plan was not re-read",ipgeolocation-pricing-excerpt.txt
+ipgeolocation.io,Starter plan,19,150000,"monthly billing, 150k credits a month",ipgeolocation-pricing-excerpt.txt
+MaxMind,GeoIP Country,0.0001,1,"per query, pay as you go. No organization field",maxmind-pricing-excerpt.txt
+MaxMind,GeoIP City Plus,0.0003,1,"per query. Adds ISP or organization",maxmind-pricing-excerpt.txt
+MaxMind,GeoIP Insights,0.002,1,"per query. Adds proxy detection and anonymizers",maxmind-pricing-excerpt.txt
+Ipregistry,1.75M credit pack,500,1750000,"pack, never expires. All response fields on every plan",ipregistry-pricing-excerpt.txt
+Ipregistry,15k credit pack,10,15000,"pack, never expires",ipregistry-pricing-excerpt.txt

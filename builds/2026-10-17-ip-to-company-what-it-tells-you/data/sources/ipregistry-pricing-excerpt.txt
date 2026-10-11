@@ -1,0 +1,8 @@
+Source: https://ipregistry.co/pricing
+Read: 2026-10-11 with curl. Text below is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+thly|Annual |2 months free|Starter|100,000 |credits / mo|$29|$24|/ month|billed $290 yearly|All response fields|2 API keys included|Auto top-up with packs |(requires initial configuration)|Subscribe|Most popular|Professional|300,000 |credits / mo|$79|$66|/ month|billed $790 yearly|All response fields|3 API keys included|Auto top-up with packs |(requires initial configuration)|Subscribe|Business|1,150,000 |credits / mo|$199|$166|/ month|billed $1990 yearly|All response fields|4 API keys included|Auto top-up with packs |(requires initial configuration)|Subscribe|Scale|2,450,000 |credits / mo|$399|$333|/ month|billed $3990 yearly|All response fields|5 API keys included|Auto top-up with packs |(requires initial configuration)|Subscribe|Need more API keys? Add extra keys to any plan for $2/mo ($20/yr) each.|1 lookup|=|1 request|=|1 credit|The 
+...
+. The bigger the pack, the lower the cost per credit.|15,000|credits|$10|$0.667 / 1,000 credits|Buy this pack|100,000|credits|$50|$0.500 / 1,000 credits|Buy this pack|250,000|credits|$100|$0.400 / 1,000 credits|Buy this pack|Best value|1,750,000|credits|$500|$0.286 / 1,
+...
+n|from $100|/mo|Unallocated, reserved and otherwise unroutable address space that should never reach your edge.|Company|from $500|/mo|The business or organization behind every IP range, with name, domain and network type.|Connection|from $300|/mo|Connection ty

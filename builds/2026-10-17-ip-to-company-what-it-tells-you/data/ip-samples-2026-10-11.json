@@ -1,0 +1,117 @@
+{
+ "read_on": "2026-10-11",
+ "ips": [
+  {
+   "ip": "8.8.8.8",
+   "role_my_label": "public DNS resolver, Google",
+   "ipapi_is_company": "Google LLC",
+   "ipapi_is_asn": "AS15169 Google LLC",
+   "ipinfo_org": "AS15169 Google LLC",
+   "ipinfo_hostname": "dns.google"
+  },
+  {
+   "ip": "1.1.1.1",
+   "role_my_label": "public DNS resolver, Cloudflare",
+   "ipapi_is_company": "APNIC Research and Development",
+   "ipapi_is_asn": "AS13335 Cloudflare, Inc.",
+   "ipinfo_org": "AS13335 Cloudflare, Inc.",
+   "ipinfo_hostname": "one.one.one.one"
+  },
+  {
+   "ip": "9.9.9.9",
+   "role_my_label": "public DNS resolver, Quad9",
+   "ipapi_is_company": "Quad9",
+   "ipapi_is_asn": "AS19281 Quad9",
+   "ipinfo_org": "AS19281 Quad9",
+   "ipinfo_hostname": "dns9.quad9.net"
+  },
+  {
+   "ip": "75.75.75.75",
+   "role_my_label": "ISP DNS resolver, Comcast",
+   "ipapi_is_company": "Comcast Cable Communications Holdings, Inc",
+   "ipapi_is_asn": "AS7922 Comcast Cable Communications, LLC",
+   "ipinfo_org": "AS7922 Comcast Cable Communications, LLC",
+   "ipinfo_hostname": "cdns01.comcast.net"
+  },
+  {
+   "ip": "208.67.222.222",
+   "role_my_label": "public DNS resolver, OpenDNS",
+   "ipapi_is_company": "Cisco OpenDNS, LLC",
+   "ipapi_is_asn": "AS36692 Cisco OpenDNS, LLC",
+   "ipinfo_org": "AS36692 Cisco OpenDNS, LLC",
+   "ipinfo_hostname": "dns.opendns.com"
+  },
+  {
+   "ip": "140.82.112.3",
+   "role_my_label": "github.com web server",
+   "ipapi_is_company": "GitHub, Inc.",
+   "ipapi_is_asn": "AS36459 GitHub, Inc.",
+   "ipinfo_org": "AS36459 GitHub, Inc.",
+   "ipinfo_hostname": "lb-140-82-112-3-iad.github.com"
+  },
+  {
+   "ip": "17.253.144.10",
+   "role_my_label": "apple.com web server, inside Apple's own range",
+   "ipapi_is_company": "Apple Inc.",
+   "ipapi_is_asn": "AS714 Apple Inc.",
+   "ipinfo_org": "AS714 Apple Inc.",
+   "ipinfo_hostname": "advertising.apple.com"
+  },
+  {
+   "ip": "18.9.22.69",
+   "role_my_label": "inside MIT's own range",
+   "ipapi_is_company": "Massachusetts Institute of Technology",
+   "ipapi_is_asn": "AS3 Massachusetts Institute of Technology",
+   "ipinfo_org": "AS3 Massachusetts Institute of Technology",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "13.107.42.14",
+   "role_my_label": "Microsoft web server",
+   "ipapi_is_company": "Microsoft Corporation",
+   "ipapi_is_asn": "AS8068 Microsoft Corporation",
+   "ipinfo_org": "AS8068 Microsoft Corporation",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "157.240.1.35",
+   "role_my_label": "facebook.com web server",
+   "ipapi_is_company": "Facebook, Inc.",
+   "ipapi_is_asn": "AS32934 Facebook, Inc.",
+   "ipinfo_org": "AS32934 Facebook, Inc.",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "3.5.140.2",
+   "role_my_label": "AWS S3, cloud hosting",
+   "ipapi_is_company": "Amazon Data Services Northern Virginia",
+   "ipapi_is_asn": "AS16509 Amazon.com, Inc.",
+   "ipinfo_org": "AS16509 Amazon.com, Inc.",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "52.95.110.1",
+   "role_my_label": "AWS, cloud hosting",
+   "ipapi_is_company": "Amazon Technologies Inc.",
+   "ipapi_is_asn": "AS16509 Amazon.com, Inc.",
+   "ipinfo_org": "AS16509 Amazon.com, Inc.",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "104.16.132.229",
+   "role_my_label": "Cloudflare CDN edge",
+   "ipapi_is_company": "Cloudflare, Inc.",
+   "ipapi_is_asn": "AS13335 Cloudflare, Inc.",
+   "ipinfo_org": "AS13335 Cloudflare, Inc.",
+   "ipinfo_hostname": null
+  },
+  {
+   "ip": "142.250.80.46",
+   "role_my_label": "Google web server",
+   "ipapi_is_company": "Google LLC",
+   "ipapi_is_asn": "AS15169 Google LLC",
+   "ipinfo_org": "AS15169 Google LLC",
+   "ipinfo_hostname": "lga34s34-in-f14.1e100.net"
+  }
+ ]
+}

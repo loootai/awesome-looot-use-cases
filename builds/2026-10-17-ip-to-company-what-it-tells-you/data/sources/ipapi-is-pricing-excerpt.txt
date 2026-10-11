@@ -1,0 +1,8 @@
+Source: https://ipapi.is/
+Read: 2026-10-11 with curl. Text below is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+nd
+                trip.|How are purchased API credits handled?|Purchased API credits |never expire| and do not require a subscription: pay any amount
+                from $1 once and receive 30,000 requests per dollar ($20 buys 600,000 requests).
+                You can buy more credits whenever needed.|Before using API credits, your daily volume from your subscription tier is utilized. In
+                the default free plan, your free tier of 1,000 requests per day is used first.|Similarly, 

@@ -1,0 +1,23 @@
+{
+ "ipinfo-lite": {
+  "usd": 0.0,
+  "unit": "call",
+  "price_set": "2026-09-06",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "ipinfo--2": {
+  "usd": 0.0005,
+  "unit": "call",
+  "price_set": "2026-09-06",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "people-data-labs-ip-enrich": {
+  "usd": 0.28,
+  "unit": "call",
+  "price_set": "2026-09-06",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ }
+}
