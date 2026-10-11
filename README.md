@@ -62,6 +62,21 @@ One dated build a day, each with its data and the steps to reproduce it. looot m
 | 2026-10-18 | [The eleven open-source alternatives, re-checked](builds/2026-10-18-eleven-open-source-alternatives-repriced/README.md) | 62 endpoint ids found in the code, none missing from the catalog. 114 of 120 README price lines match. 4 stale figures in this index |
 | 2026-10-19 | [Status line for looot spend](builds/2026-10-19-statusline-looot-spend/README.md) | Prints in 70 ms from cache, session spend matched an independent sum over 37 real runs |
 
+### Plan days not built because they need a paid looot run
+
+Prices are looot list prices read from the public catalog on 2026-10-11. Nothing was run for these.
+
+| Plan day | Build | Needs a paid run | Expected cost |
+| --- | --- | --- | --- |
+| 4 | 20 names and domains to 20 work emails with a receipt | needs a paid run | 20 x $0.0245 (`hunter-email-finder`) = $0.49 at most |
+| 5 | `fetch-docs` skill, docs pages as markdown | needs a paid run | 10 pages at $0.0002 to $0.005 each = $0.002 to $0.05 |
+| 6 | Top 10 Google results for 20 keywords | needs a paid run | 20 x $0.001 (`serper-search`) = $0.02 |
+| 7 | GPT Researcher on looot, one report | needs a paid run | about $0.014 to $0.11 (10 searches at $0.001, 20 pages at $0.0002 to $0.005) |
+| 9 | Competitor pricing page diff | needs a paid run | 5 pages a day at $0.0002 to $0.005 = $0.001 to $0.025 a day |
+| 10 | n8n workflow, verify then enrich | needs a paid run | 10 rows x ($0.00145 + $0.0019) = $0.0335 |
+
+Plan day 12 (benchmark protocol) needs a human to approve the protocol before anything is published, so it was left out too. The builds dated 2026-10-13 to 2026-10-19 above come from plan days 8, 16, 17, 25 and 20 (all free), plus two on the visitor identification and open-source alternatives themes.
+
 ## Quick start
 
 ```bash
