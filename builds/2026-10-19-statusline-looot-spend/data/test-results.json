@@ -1,0 +1,53 @@
+{
+ "no_token": [
+  "looot: set LOOOT_TOKEN",
+  65,
+  0
+ ],
+ "cold_first_call": [
+  "looot session $0 | reading...",
+  69,
+  0
+ ],
+ "after_refresh": [
+  "looot session $0.0000 (0 runs) | balance $NN.NN",
+  67,
+  0
+ ],
+ "cached_call_ms": {
+  "n": 20,
+  "median": 70.0,
+  "max": 108,
+  "min": 60
+ },
+ "refresh_ms_measured_by_script": 2310,
+ "hide_balance": [
+  "looot session $0.0000 (0 runs)",
+  62,
+  0
+ ],
+ "since_test": {
+  "since": "2026-10-09T00:00:00Z",
+  "script_printed": "looot session $0.8044 (37 runs)",
+  "independent_sum_usd": 0.80438,
+  "independent_runs": 37,
+  "independent_source": "looot runs list --limit 50 (CLI, own date filter and sum)",
+  "script_state": {
+   "at": 1791738614.4259012,
+   "spend": 0.80438,
+   "runs": 37,
+   "window_full": false,
+   "ms": 1620,
+   "error": null
+  }
+ },
+ "api_unreachable": [
+  "looot: cannot read (URLError)",
+  82,
+  0
+ ],
+ "meta": {
+  "date": "2026-10-11",
+  "python": "3.10.13"
+ }
+}
