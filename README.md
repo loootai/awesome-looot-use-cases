@@ -54,6 +54,7 @@ One dated build a day, each with its data and the steps to reproduce it. looot m
 | 2026-10-10 | [One looot entry vs six MCP servers](builds/2026-10-10-one-key-six-servers/README.md) | Tool-definition size read from each server's tools/list |
 | 2026-10-11 | [One Google search at 7 providers](builds/2026-10-11-google-search-price-spread/README.md) | $0.0009 to $0.025 a call, read from the free catalog |
 | 2026-10-12 | [/looot-price slash command](builds/2026-10-12-looot-price-command/README.md) | Every provider and price for a task, nothing run |
+| 2026-10-13 | [Budget guard hook for Claude Code](builds/2026-10-13-budget-guard-hook/README.md) | Blocked a $0.025 run at a $0.01 limit in a real session, 23 payloads checked |
 
 ## Quick start
 

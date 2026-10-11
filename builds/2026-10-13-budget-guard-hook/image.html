@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>budget guard</title>
+<style>:root{--ink:#0B2E22;--deep:#0B4A35;--green:#12A06A;--paper:#F7F8F5}
+*{box-sizing:border-box}body{margin:0;width:1600px;height:900px;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;padding:48px 72px;position:relative}
+h1{font-size:42px;margin:0 0 8px;color:var(--deep);letter-spacing:-.5px}.sub{font-size:20px;color:#35574a;margin:0 0 26px;max-width:1400px}
+.grid{display:grid;grid-template-columns:780px 1fr;gap:36px}
+.r{display:grid;grid-template-columns:132px 1fr 84px;align-items:center;gap:12px;height:50px;border-bottom:1px solid #dfe5dc;font-size:19px}
+.chip{font-size:15px;font-weight:700;text-align:center;border-radius:4px;padding:5px 0}.ms{text-align:right;color:#4d6b5f;font-size:16px}
+.note{font-size:17px;color:#35574a;margin-top:14px}
+pre{background:var(--ink);color:#e6f2ec;font:16px/1.45 ui-monospace,Menlo,monospace;padding:22px 26px;border-radius:8px;margin:0;white-space:pre-wrap;height:560px;overflow:hidden}
+.cmd{color:var(--green)}h2{font-size:20px;margin:0 0 10px;color:var(--deep)}
+.foot{position:absolute;left:72px;right:72px;bottom:28px;font-size:15px;color:#4d6b5f;display:flex;justify-content:space-between;align-items:center}img{height:40px}</style>
+<h1>A price limit for looot runs, checked before the run</h1>
+<p class="sub">A Claude Code PreToolUse hook reads the endpoint's list price from the free catalog and answers deny, ask or stays silent inside the limits. Limits here: $0.01 a call, $0.25 a session. No looot run was made.</p>
+<div class="grid"><div><h2>Decision per case, 2026-10-11</h2><div class="r"><span class="chip" style="background:#e1efe7;color:#0B4A35">within limit</span><span class="c">MCP run, serper-search ($0.001)</span><span class="ms">980 ms</span></div><div class="r"><span class="chip" style="background:#0B2E22;color:#F7F8F5">deny</span><span class="c">MCP run, serpapi-google ($0.025)</span><span class="ms">1323 ms</span></div><div class="r"><span class="chip" style="background:#e1efe7;color:#0B4A35">within limit</span><span class="c">Bash: looot run serper-search</span><span class="ms">1568 ms</span></div><div class="r"><span class="chip" style="background:#0B2E22;color:#F7F8F5">deny</span><span class="c">Bash: looot run serpapi-google</span><span class="ms">1289 ms</span></div><div class="r"><span class="chip" style="background:#12A06A;color:#0B2E22">ask</span><span class="c">MCP run, job:people.email.find</span><span class="ms">52 ms</span></div><div class="r"><span class="chip" style="background:#12A06A;color:#0B2E22">ask</span><span class="c">MCP run, per-result price (ai-ark-people)</span><span class="ms">885 ms</span></div><div class="r"><span class="chip" style="background:#12A06A;color:#0B2E22">ask</span><span class="c">MCP run, fallback true</span><span class="ms">948 ms</span></div><div class="r"><span class="chip" style="background:#0B2E22;color:#F7F8F5">deny</span><span class="c">MCP run, fallback maxCostUsd 0.5</span><span class="ms">946 ms</span></div><div class="r"><span class="chip" style="background:#12A06A;color:#0B2E22">ask</span><span class="c">catalog unreachable</span><span class="ms">65 ms</span></div><div class="r"><span class="chip" style="background:#eef0ea;color:#4d6b5f">ignore</span><span class="c">not a looot run: Bash ls</span><span class="ms">58 ms</span></div><div class="note">Session cap $0.005, runs of $0.001: 5 pass, then 2 denied.</div></div>
+<div><h2>Real claude -p session with the hook installed</h2><pre><span class="cmd">&gt; Run exactly this shell command: looot run serpapi-google --input '{"q":"test"}'</span>
+
+The command didn&#x27;t run. A PreToolUse hook blocked it first:
+```
+looot budget guard: &#x27;serpapi-google&#x27; lists at $0.025 a call, above the per-call limit $0.01 (LOOOT_MAX_PRICE_PER_CALL). Pick a cheaper endpoint or ask the user.
+```
+Your looot budget guard caps each call at $0.01, and `serpapi-google` costs $0.025 per call, so nothing reached SerpAPI and nothing was charged.</pre></div></div>
+<div class="foot"><span>looot made this. Prices are looot list prices read from its public catalog. Hook and tests: github.com/loootai/awesome-looot-use-cases</span><img src="wordmark.svg" alt="looot"></div>

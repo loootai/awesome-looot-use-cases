@@ -1,0 +1,15 @@
+The command didn't run. A PreToolUse hook blocked it first:
+
+```
+looot budget guard: 'serpapi-google' lists at $0.025 a call, above the per-call limit $0.01 (LOOOT_MAX_PRICE_PER_CALL). Pick a cheaper endpoint or ask the user.
+```
+
+Your looot budget guard caps each call at $0.01, and `serpapi-google` costs $0.025 per call, so nothing reached SerpAPI and nothing was charged.
+
+You can get past it one of three ways:
+
+1. Approve the $0.025 call and raise `LOOOT_MAX_PRICE_PER_CALL` to 0.025 or higher, then I'll rerun the command.
+2. Use a cheaper Google SERP endpoint that fits under $0.01. I can look one up.
+3. Leave it blocked if this was only a check that the guard works. It does.
+
+Which one do you want?

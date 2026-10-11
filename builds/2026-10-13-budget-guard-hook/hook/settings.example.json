@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|mcp__.*looot.*__run",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "LOOOT_MAX_PRICE_PER_CALL=0.01 LOOOT_SESSION_CAP=0.25 python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/looot_budget_guard.py"
+          }
+        ]
+      }
+    ]
+  }
+}

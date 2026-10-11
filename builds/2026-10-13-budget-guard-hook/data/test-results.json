@@ -1,0 +1,170 @@
+{
+ "meta": {
+  "date": "2026-10-11",
+  "python": "3.10.13",
+  "cases": 23
+ },
+ "results": [
+  {
+   "case": "MCP run, serper-search ($0.001)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.001 of $0.25",
+   "ms": 980,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, serpapi-google ($0.025)",
+   "decision": "deny",
+   "reason": "looot budget guard: 'serpapi-google' lists at $0.025 a call, above the per-call limit $0.01 (LOOOT_MAX_PRICE_PER_CALL). Pick a cheaper endpoint or ask the user.",
+   "ms": 1323,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, free endpoint ($0)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'ai-ark-lists' $0, session total $0.001 of $0.25",
+   "ms": 940,
+   "exit": 0
+  },
+  {
+   "case": "Bash: looot run serper-search",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.002 of $0.25",
+   "ms": 1568,
+   "exit": 0
+  },
+  {
+   "case": "Bash: looot run serpapi-google",
+   "decision": "deny",
+   "reason": "looot budget guard: 'serpapi-google' lists at $0.025 a call, above the per-call limit $0.01 (LOOOT_MAX_PRICE_PER_CALL). Pick a cheaper endpoint or ask the user.",
+   "ms": 1289,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, job:people.email.find",
+   "decision": "ask",
+   "reason": "looot budget guard: the endpoint 'job:people.email.find' has no single list price. Price not known, so the limit cannot be checked.",
+   "ms": 52,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, per-result price (ai-ark-people)",
+   "decision": "ask",
+   "reason": "looot budget guard: 'ai-ark-people' is priced per result ($0.005391 each), so the total depends on how many come back. Price not known, so the limit cannot be checked.",
+   "ms": 885,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, fallback true",
+   "decision": "ask",
+   "reason": "looot budget guard: this run uses fallback with no maxCostUsd, so other providers may be tried at other prices. Set fallback.maxCostUsd.",
+   "ms": 948,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, fallback maxCostUsd 0.5",
+   "decision": "deny",
+   "reason": "looot budget guard: 'serper-search' lists at $0.5 a call, above the per-call limit $0.01 (LOOOT_MAX_PRICE_PER_CALL). Pick a cheaper endpoint or ask the user.",
+   "ms": 946,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, fallback maxCostUsd 0.005",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.005, session total $0.007 of $0.25",
+   "ms": 1014,
+   "exit": 0
+  },
+  {
+   "case": "MCP run, endpoint that does not exist",
+   "decision": "ask",
+   "reason": "looot budget guard: catalog answered HTTP 404 for 'no-such-endpoint'. Price not known, so the limit cannot be checked.",
+   "ms": 949,
+   "exit": 0
+  },
+  {
+   "case": "catalog unreachable",
+   "decision": "ask",
+   "reason": "looot budget guard: could not read the catalog (URLError). Price not known, so the limit cannot be checked.",
+   "ms": 65,
+   "exit": 0
+  },
+  {
+   "case": "LOOOT_UNKNOWN_PRICE=deny, job id",
+   "decision": "deny",
+   "reason": "looot budget guard: the endpoint 'job:people.email.find' has no single list price. Price not known, so the limit cannot be checked.",
+   "ms": 61,
+   "exit": 0
+  },
+  {
+   "case": "not a looot run: Bash ls",
+   "decision": "no opinion (exit 0, no output)",
+   "reason": "",
+   "ms": 58,
+   "exit": 0
+  },
+  {
+   "case": "not a looot run: Edit",
+   "decision": "no opinion (exit 0, no output)",
+   "reason": "",
+   "ms": 218,
+   "exit": 0
+  },
+  {
+   "case": "MCP inspect (free tool)",
+   "decision": "no opinion (exit 0, no output)",
+   "reason": "",
+   "ms": 95,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 1 (cap $0.005)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.001 of $0.005",
+   "ms": 1124,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 2 (cap $0.005)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.002 of $0.005",
+   "ms": 863,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 3 (cap $0.005)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.003 of $0.005",
+   "ms": 1190,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 4 (cap $0.005)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.004 of $0.005",
+   "ms": 1150,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 5 (cap $0.005)",
+   "decision": "pass (message only)",
+   "reason": "looot budget guard: 'serper-search' $0.001, session total $0.005 of $0.005",
+   "ms": 1058,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 6 (cap $0.005)",
+   "decision": "deny",
+   "reason": "looot budget guard: this run ($0.001) would take the session past the cap $0.005 (LOOOT_SESSION_CAP). Spent so far $0.005. Ask the user to raise it.",
+   "ms": 1057,
+   "exit": 0
+  },
+  {
+   "case": "cap test run 7 (cap $0.005)",
+   "decision": "deny",
+   "reason": "looot budget guard: this run ($0.001) would take the session past the cap $0.005 (LOOOT_SESSION_CAP). Spent so far $0.005. Ask the user to raise it.",
+   "ms": 1025,
+   "exit": 0
+  }
+ ]
+}
