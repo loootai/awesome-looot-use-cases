@@ -57,6 +57,7 @@ One dated build a day, each with its data and the steps to reproduce it. looot m
 | 2026-10-13 | [Budget guard hook for Claude Code](builds/2026-10-13-budget-guard-hook/README.md) | Blocked a $0.025 run at a $0.01 limit in a real session, 23 payloads checked |
 | 2026-10-14 | [Catalog map](builds/2026-10-14-catalog-map/README.md) | 2,590 endpoints, 94 providers. 119 jobs have 2 or more providers, median price spread 6.9x |
 | 2026-10-15 | [before-you-sign-up skill](builds/2026-10-15-before-you-sign-up-skill/README.md) | Skill used on 6 of 6 data prompts and 0 of 2 others, 8 prompts, small test |
+| 2026-10-16 | [Subscription vs per-call](builds/2026-10-16-subscription-vs-per-call/README.md) | looot's list price equals the vendor's entry price for 4 of 5 vendors, bigger vendor plans are 2 to 7.5x cheaper per unit |
 
 ## Quick start
 

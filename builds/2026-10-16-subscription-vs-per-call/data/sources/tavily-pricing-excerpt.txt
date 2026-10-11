@@ -1,0 +1,5 @@
+Source: https://tavily.com/pricing
+Read: 2026-10-11 with curl. Text below is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+|Insurance|Explore|Use Cases|Post-Training|Learn|Blog|Certification|Events|Company|About|Customers|Careers|Contact|Log in|/pricing plans|Find a plan to power your AI Agents|Researcher|Free| / month|For new creators|1,000 API credits / month|No credit card required|Email support|Get Started|Pay As You Go|$0.008| / credit|For flexible usage|Pay only for what you use|Cancel anytime|Email support|Get Started|Project|$|0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5|6|7|8|9| / month|Built for enthusiasts|Slide to adjust plan|4,000 API credits / month|Higher rate limits|Email support|Get Started|Enterprise|Custom|For corporations|Custom API calls|Custom rate limits|Enterprise-grade support and SLAs|Enterprise-grade security and privacy|Talk to Sales|Free for students|We're dedicated to supporting the pursuit of knowledge
+by offering our service at no cost for 

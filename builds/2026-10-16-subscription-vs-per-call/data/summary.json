@@ -1,0 +1,165 @@
+{
+ "serper": {
+  "looot_endpoint": "serper-search",
+  "looot_usd_per_call": 0.001,
+  "price_set": "2026-10-05",
+  "segments": [
+   {
+    "from_calls_per_month": 1,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 62500,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 62501,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 83334,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 208334,
+    "result": "direct cheaper"
+   }
+  ]
+ },
+ "serpapi": {
+  "looot_endpoint": "serpapi-google",
+  "looot_usd_per_call": 0.025,
+  "price_set": "2026-10-05",
+  "segments": [
+   {
+    "from_calls_per_month": 1,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 251,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 1000,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 1001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 3000,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 3001,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 5001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 6000,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 6001,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 30001,
+    "result": "beyond listed plans"
+   }
+  ]
+ },
+ "hunter": {
+  "looot_endpoint": "hunter-email-finder",
+  "looot_usd_per_call": 0.0245,
+  "price_set": "2026-09-06",
+  "segments": [
+   {
+    "from_calls_per_month": 1,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 51,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 2000,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 2001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 6082,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 10001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 12205,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 25001,
+    "result": "beyond listed plans"
+   }
+  ]
+ },
+ "firecrawl": {
+  "looot_endpoint": "firecrawl-scrape",
+  "looot_usd_per_call": 0.005,
+  "price_set": "2026-09-21",
+  "segments": [
+   {
+    "from_calls_per_month": 1,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 1001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 3200,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 3201,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 5001,
+    "result": "looot cheaper"
+   },
+   {
+    "from_calls_per_month": 16600,
+    "result": "same"
+   },
+   {
+    "from_calls_per_month": 16601,
+    "result": "direct cheaper"
+   }
+  ]
+ },
+ "tavily": {
+  "looot_endpoint": "tavily-search",
+  "looot_usd_per_call": 0.008,
+  "price_set": "2026-09-06",
+  "segments": [
+   {
+    "from_calls_per_month": 1,
+    "result": "direct cheaper"
+   },
+   {
+    "from_calls_per_month": 1001,
+    "result": "same"
+   }
+  ]
+ }
+}

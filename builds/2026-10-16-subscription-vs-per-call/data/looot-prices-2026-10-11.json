@@ -1,0 +1,42 @@
+{
+ "firecrawl-scrape": {
+  "provider": "firecrawl",
+  "usd": 0.005,
+  "unit": "call",
+  "price_set": "2026-09-21",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "hunter-email-finder": {
+  "provider": "hunter",
+  "usd": 0.0245,
+  "unit": "call",
+  "price_set": "2026-09-06",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "serpapi-google": {
+  "provider": "serpapi",
+  "usd": 0.025,
+  "unit": "call",
+  "price_set": "2026-10-05",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "serper-search": {
+  "provider": "serper",
+  "usd": 0.001,
+  "unit": "call",
+  "price_set": "2026-10-05",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ },
+ "tavily-search": {
+  "provider": "tavily",
+  "usd": 0.008,
+  "unit": "call",
+  "price_set": "2026-09-06",
+  "verification": "unverified",
+  "read_on": "2026-10-11"
+ }
+}

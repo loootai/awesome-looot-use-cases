@@ -1,0 +1,64 @@
+Source: https://hunter.io/pricing
+Read: 2026-10-11 with curl. Text below is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+utreach platform|
+Find, verify, and send cold emails
+|Data Platform|
+API only access to Hunter data
+|
+Pay yearly
+|-30%|
+Pay monthly
+|Free|The easiest way to try Hunter|
+          $0
+      |
+    Get started
+|50 credits per month |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|Credits reset monthly and|don't roll over.'>|Basic Discover B2B database filters|AI Assistant in Discover |Signals from your existing leads |Connect 1 email account|500 recipients per sequence|Unlimited team members|Regular support|Starter|Start outreach with essential tools|
+              $49
+          |
+              $34
+          |/month|billed monthly|
+            $588
+          |
+            $408 billed yearly
+        |
+    Get started
+|2,000 credits per month |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|Credits reset monthly and|don't roll over.'>|24,000 credits per year |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|All credits are available upfront for the whole year.'>|Auto-verification|Lead enrichment|Advanced Discover filters|AI Assistant in Discover |New lead suggestions every week |Signals from your existing leads |Connect 3 email accounts|AI Writing Assistant|Unlimited team members|Priority support|Available as add-ons|Inbox Protection |Managed email accounts |Email account slots|Credit Packs|Growth|Grow momentum in your outreach|
+              $149
+          |
+              $104
+          |/month|billed monthly|
+            $1,788
+          |
+            $1,248 billed yearly
+        |
+    Get started
+|10,000 credits per month |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|Credits reset monthly and|don't roll over.'>|120,000 credits per year |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|All credits are available upfront for the whole year.'>|Auto-verification|Lead enrichment|Advanced Discover filters|AI Assistant in Discover |New lead suggestions every week |Signals from your existing leads |Connect 10 email accounts|AI Writing Assistant|Unlimited team members|Priority support|Available as add-ons|Inbox Protection |Managed email accounts |Email account slots|Credit Packs|Scale|Scale growth across leads and outreach|
+              $299
+          |
+              $209
+          |/month|billed monthly|
+            $3,588
+          |
+            $2,508 billed yearly
+        |
+    Get started
+|25,000 credits per month |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|Credits reset monthly and|don't roll over.'>|300,000 credits per year |Credit cost|Email found · 1 credit|Email verified · 0.5 credit|All credits are available upfront for the whole year.'>|Auto-verification|Lead enrichment|Advanced Discover filters|AI Assistant in Discover |New lead suggestions every week |Signals from your existing leads |Connect 20 email accounts|AI Writing Assistant|Unlimited team members|Priority support + Account manager|Available as add-ons|Inbox Protection |Managed email accounts |Email account slots|Credit Packs|Enterprise|Need more? Tell us about your plans.|
+          Custom
+ 
+...
+Visit the Help Center|
+How are credits counted?
+|1 credit = 1 email found via |Domain Search|, |Email Finder|, or Bulk Email Finder|1 credit = up to 10 emails found via |Bulk Domain Search|0.5 credit = 1 email verified via |Email Verifier| or |Bulk Email Verifier|
+I just want to use Hunter once to export data. Is it possible?
+|Yes. You're free to take a subscription just for one month and cancel it when your work is done.|
+Can I cancel my subscription at any time?
+|Yes, you can change or cancel your plan at any time in your dashboard. Once you have canceled, you'll still have access to your premium plan until the end of your subscription cycle.|
+Can I share my subscription with my team?
+|Yes! You are free to add team members to share your subscription with. In this case, all the members will share the common monthly quotas provided in the plan.|
+How are credits counted when using the Domain Search?
+|In the |Domain Search|, 1 credit is used for each email found, while in the Bulk Domain Search, 1 credit is used for up to 10 emails found. If no emails are found, no credits are used.|
+How are searches counted when using the Email Finder?
+|1 credit is counted for each email found using the |Email Finder|. If the email address can't be found, it's free.|
+How are credits counted when using the Email Verifier?
+|0.5 credit is counted per |verified email|. If we fail to verify, no credit is counted; in thi
