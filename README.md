@@ -83,6 +83,7 @@ curl -s -X POST 'https://api.looot.ai/v1/runs?wait=30' \
 - [loootai/looot-mcp](https://github.com/loootai/looot-mcp), install steps for the MCP server.
 - [loootai/looot-js](https://github.com/loootai/looot-js), a typed client for the REST API.
 - [loootai/looot-skills](https://github.com/loootai/looot-skills), agent skills for 20 data jobs.
+- [loootai/reverse-engineer](https://github.com/loootai/reverse-engineer), skills that take a product apart from public evidence, rebuild it on looot and request missing data sources.
 - [loootai/n8n-nodes-looot](https://github.com/loootai/n8n-nodes-looot), the n8n node.
 - [loootai/awesome-gtm](https://github.com/loootai/awesome-gtm), a list of open-source GTM tools, with and without looot.
 
