@@ -1,0 +1,295 @@
+{
+ "read_on": "2026-10-11",
+ "repos": {
+  "looot-intent": {
+   "commit": "2a6e24d 2026-10-11T18:51:49+02:00",
+   "endpoints_in_code": [
+    "companyenrich-companies-workforce",
+    "dataforseo-dataforseo-labs-google-domain-rank-overview-live-ai",
+    "datagma-website-traffic",
+    "predictleads-companies-financing-events",
+    "predictleads-companies-job-openings",
+    "predictleads-companies-news-events",
+    "predictleads-companies-technology-detections",
+    "scrapecreators-google-company-ads",
+    "scrapecreators-linkedin-ads-search",
+    "scrapecreators-reddit-search",
+    "theirstack-companies-buying-intents"
+   ],
+   "n_endpoints": 11,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [
+    "theirstack-companies-buying-intents"
+   ],
+   "price_lines_matching_today": 12,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.00188,
+   "dearest_endpoint_usd": 0.0981,
+   "all_endpoints_one_call_each_usd": 0.27006
+  },
+  "looot-score": {
+   "commit": "42e0558 2026-10-11T16:10:55+02:00",
+   "endpoints_in_code": [
+    "dropleads-simple-enrich",
+    "predictleads-companies-job-openings",
+    "predictleads-companies-technology-detections",
+    "quickenrich-api-employees-email-search",
+    "thecompaniesapi-companies-by-email"
+   ],
+   "n_endpoints": 5,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [],
+   "price_lines_matching_today": 4,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.0019,
+   "dearest_endpoint_usd": 0.01,
+   "all_endpoints_one_call_each_usd": 0.02963
+  },
+  "looot-reveal": {
+   "commit": "efd84a5 2026-10-11T16:28:15+02:00",
+   "endpoints_in_code": [
+    "ipinfo--2",
+    "ipinfo-lite",
+    "people-data-labs-ip-enrich",
+    "people-data-labs-person-enrich"
+   ],
+   "n_endpoints": 4,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [
+    "people-data-labs-person-enrich"
+   ],
+   "price_lines_matching_today": 6,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.0,
+   "dearest_endpoint_usd": 0.28,
+   "all_endpoints_one_call_each_usd": 0.5605
+  },
+  "looot-techstack": {
+   "commit": "81650af 2026-10-11T13:32:09+02:00",
+   "endpoints_in_code": [
+    "builtwith-api-json",
+    "builtwith-free1-api-json",
+    "builtwith-lists12-api-json",
+    "predictleads-companies-technology-detections",
+    "predictleads-discover-technologies-technology-detections",
+    "predictleads-technologies-2",
+    "theirstack-companies-technologies",
+    "tomba-technology"
+   ],
+   "n_endpoints": 8,
+   "looks_like_endpoint_id_but_not_in_catalog": [
+    "builtwith-free"
+   ],
+   "unit_result": [
+    "predictleads-discover-technologies-technology-detections"
+   ],
+   "price_lines_matching_today": 6,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.0,
+   "dearest_endpoint_usd": 0.0981,
+   "all_endpoints_one_call_each_usd": 0.256
+  },
+  "looot-signals": {
+   "commit": "4592fee 2026-10-11T16:44:37+02:00",
+   "endpoints_in_code": [
+    "anyapi-run-linkedin-jobs-thin",
+    "aviato-company-founders",
+    "aviato-company-funding-rounds",
+    "predictleads-discover-financing-events",
+    "serper-news",
+    "signalbase-signals-job-changes",
+    "theirstack-jobs-search"
+   ],
+   "n_endpoints": 7,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [
+    "theirstack-jobs-search",
+    "predictleads-discover-financing-events"
+   ],
+   "price_lines_matching_today": 12,
+   "price_lines_differing": 4,
+   "differences": [
+    {
+     "endpoint": "theirstack-jobs-search",
+     "doc_says": 0.327,
+     "catalog_today": 0.0327,
+     "file": "README.md",
+     "line": "clay-n8n-job-ads         theirstack-jobs-search                       $0.3270  revenue operations, growth, Clay, n8n"
+    },
+    {
+     "endpoint": "predictleads-discover-financing-events",
+     "doc_says": 0.2,
+     "catalog_today": 0.01,
+     "file": "README.md",
+     "line": "recent-rounds            predictleads-discover-financing-events       $0.2000  seed, series_a"
+    },
+    {
+     "endpoint": "aviato-company-founders",
+     "doc_says": 0.1,
+     "catalog_today": 0.05,
+     "file": "README.md",
+     "line": "recent-rounds            aviato-company-founders                      $0.1000  founders of up to 2 new companies, company.founders"
+    },
+    {
+     "endpoint": "aviato-company-funding-rounds",
+     "doc_says": 0.1,
+     "catalog_today": 0.05,
+     "file": "README.md",
+     "line": "recent-rounds            aviato-company-funding-rounds                $0.1000  investors in the latest round of up to 2 new companies, company.funding"
+    }
+   ],
+   "cheapest_endpoint_usd": 0.0005,
+   "dearest_endpoint_usd": 0.108,
+   "all_endpoints_one_call_each_usd": 0.2522
+  },
+  "looot-lookalike": {
+   "commit": "6645762 2026-10-11T16:17:49+02:00",
+   "endpoints_in_code": [
+    "ai-ark-companies",
+    "companyenrich-companies-enrich-get",
+    "hunter-companies-find",
+    "serper-news",
+    "thecompaniesapi-companies-similar"
+   ],
+   "n_endpoints": 5,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [
+    "thecompaniesapi-companies-similar",
+    "ai-ark-companies"
+   ],
+   "price_lines_matching_today": 7,
+   "price_lines_differing": 2,
+   "differences": [
+    {
+     "endpoint": "thecompaniesapi-companies-similar",
+     "doc_says": 0.095,
+     "catalog_today": 0.0019,
+     "file": "README.md",
+     "line": "similar  thecompaniesapi-companies-similar        $0.0950  TheCompaniesAPI, similar to domains"
+    },
+    {
+     "endpoint": "ai-ark-companies",
+     "doc_says": 0.06,
+     "catalog_today": 0.0012,
+     "file": "README.md",
+     "line": "similar  ai-ark-companies                         $0.0600  AI Ark, lookalike search (up to 5 domains)"
+    }
+   ],
+   "cheapest_endpoint_usd": 0.001,
+   "dearest_endpoint_usd": 0.0098,
+   "all_endpoints_one_call_each_usd": 0.0188
+  },
+  "looot-ads": {
+   "commit": "45b4f0a 2026-10-11T18:59:49+02:00",
+   "endpoints_in_code": [
+    "anysite-api-twitter-ads-search",
+    "scrapecreators-facebook-adlibrary-company-ads-get",
+    "scrapecreators-facebook-adlibrary-search-ads-get",
+    "scrapecreators-linkedin-ads-search",
+    "scrapecreators-tiktok-ad-library-search",
+    "searchapi-io-google-ads-transparency-center",
+    "searchapi-io-reddit-ad-library",
+    "tikhub-api-tiktok-ads-search-ads"
+   ],
+   "n_endpoints": 8,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [
+    "anysite-api-twitter-ads-search"
+   ],
+   "price_lines_matching_today": 18,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.00036,
+   "dearest_endpoint_usd": 0.004,
+   "all_endpoints_one_call_each_usd": 0.01688
+  },
+  "looot-reviews": {
+   "commit": "25736d2 2026-10-11T13:51:27+02:00",
+   "endpoints_in_code": [
+    "anysite-api-google-play-apps-reviews",
+    "searchapi-io-apple-product-reviews",
+    "searchapi-io-tripadvisor-reviews",
+    "serper-places",
+    "serper-reviews"
+   ],
+   "n_endpoints": 5,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [],
+   "price_lines_matching_today": 11,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.001,
+   "dearest_endpoint_usd": 0.03597,
+   "all_endpoints_one_call_each_usd": 0.04597
+  },
+  "looot-battlecards": {
+   "commit": "b990296 2026-10-11T13:50:09+02:00",
+   "endpoints_in_code": [
+    "jina-reader",
+    "scrapecreators-facebook-adlibrary-company-ads-get",
+    "scrapecreators-linkedin-ads-search",
+    "serper-news",
+    "serper-search",
+    "tomba-technology"
+   ],
+   "n_endpoints": 6,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [],
+   "price_lines_matching_today": 12,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.0002,
+   "dearest_endpoint_usd": 0.0089,
+   "all_endpoints_one_call_each_usd": 0.01486
+  },
+  "looot-mentions": {
+   "commit": "eac77e5 2026-10-11T14:11:19+02:00",
+   "endpoints_in_code": [
+    "anyapi-run-instagram-reels-search",
+    "anyapi-run-twitter-search",
+    "scrapecreators-reddit-search",
+    "scrapecreators-tiktok-search-keyword",
+    "serper-news",
+    "serper-search",
+    "tikhub-api-youtube-web-search-video"
+   ],
+   "n_endpoints": 7,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [],
+   "price_lines_matching_today": 16,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.00075,
+   "dearest_endpoint_usd": 0.00188,
+   "all_endpoints_one_call_each_usd": 0.00901
+  },
+  "looot-warm-leads": {
+   "commit": "7ce50a7 2026-10-11T16:36:46+02:00",
+   "endpoints_in_code": [
+    "anysite-api-linkedin-user-email",
+    "fetchin-company",
+    "fetchin-post-engagement",
+    "fetchin-profile",
+    "harvestapi-post-search",
+    "harvestapi-profile-posts",
+    "millionverifier-verify",
+    "predictleads-companies-financing-events",
+    "predictleads-companies-job-openings",
+    "scrapecreators-linkedin-company-posts"
+   ],
+   "n_endpoints": 10,
+   "looks_like_endpoint_id_but_not_in_catalog": [],
+   "unit_result": [],
+   "price_lines_matching_today": 10,
+   "price_lines_differing": 0,
+   "differences": [],
+   "cheapest_endpoint_usd": 0.0015,
+   "dearest_endpoint_usd": 0.01,
+   "all_endpoints_one_call_each_usd": 0.04126
+  }
+ }
+}

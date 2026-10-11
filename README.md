@@ -59,6 +59,7 @@ One dated build a day, each with its data and the steps to reproduce it. looot m
 | 2026-10-15 | [before-you-sign-up skill](builds/2026-10-15-before-you-sign-up-skill/README.md) | Skill used on 6 of 6 data prompts and 0 of 2 others, 8 prompts, small test |
 | 2026-10-16 | [Subscription vs per-call](builds/2026-10-16-subscription-vs-per-call/README.md) | looot's list price equals the vendor's entry price for 4 of 5 vendors, bigger vendor plans are 2 to 7.5x cheaper per unit |
 | 2026-10-17 | [What an IP-to-company lookup returns](builds/2026-10-17-ip-to-company-what-it-tells-you/README.md) | Owner lookups $0.03 to $2 per 1,000, a company profile $280 per 1,000 matches, 14 IPs checked at two free services |
+| 2026-10-18 | [The eleven open-source alternatives, re-checked](builds/2026-10-18-eleven-open-source-alternatives-repriced/README.md) | 62 endpoint ids found in the code, none missing from the catalog. 114 of 120 README price lines match. 4 stale figures in this index |
 
 ## Quick start
 

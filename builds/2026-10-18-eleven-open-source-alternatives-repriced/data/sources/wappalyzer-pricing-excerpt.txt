@@ -1,0 +1,6 @@
+Source: https://wappalyzer.com/pricing
+Read: 2026-10-11 with curl. Text is the pricing part of the page with HTML tags turned into | separators. Nothing edited.
+
+|/| Plans & pricing | Choose a plan for your technographics workflow | Start free for website research, then upgrade when you need lead lists, CRM enrichment, or API workflows at team scale. |Billing|Monthly| Annually |(save 17%)| Users |Lead list technology targets|Technology lookups|Email verifications| Included API credits | CRM enrichment | Pro | Slice and filter one technology into as many lists as you need | $250 |/|mo | Start with Pro | 1 | 2 | 5,000 | 5,000 | Most popular | Business | Full access — build lists across any combination of technologies | $450 |/|mo | Choose Business | 5 | Unlimited | 20,000 | 20,000 | 20,000 | Enterprise | Higher limits, dedicated support, and custom terms | $850+ |/|mo | Talk to sales | 25+ | Unlimited | 200,000+ | 200,000+ | 200,000+ | Need help choosing a plan? | Talk to sales | Plans can be canceled at any time.| API credits included i
+...
+nited States dollars. |Start free | Create a free account to get 50 technology lookups every month and free sample lead lists before you choose a paid plan. |Start free|Frequently asked questions| Do you of

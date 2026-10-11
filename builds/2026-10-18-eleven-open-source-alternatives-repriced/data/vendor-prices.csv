@@ -1,0 +1,12 @@
+repo,replaces,vendor_public_price_read_2026-10-11,source_file,repo_typical_run_per_its_readme
+looot-intent,6sense,not read (the pricing page answered HTTP 403 to curl),,"$0.2701 per account, all eleven signals"
+looot-score,MadKudu,not read (HTTP 403),,"$0.83 to $1.67 per 100 leads"
+looot-reveal,RB2B and Clearbit Reveal,"RB2B: Free, 150 resolutions a month. Starter $79 a month",rb2b-pricing-excerpt.txt,"$0.0005 per new IP"
+looot-techstack,BuiltWith and Wappalyzer,"BuiltWith Basic $295 a month. Wappalyzer Pro $250 a month, free 50 lookups a month","builtwith-pricing-excerpt.txt, wappalyzer-pricing-excerpt.txt","$1.89 per 100 domains on three providers"
+looot-signals,TheirStack and Harmonic,"TheirStack $49 a month for 1,500 API credits, $109 one time for 1,000 company credits. Harmonic not read",theirstack-pricing-excerpt.txt,"at most $0.731 for the five example triggers"
+looot-lookalike,Ocean.io,not read (HTTP 403),,"at most $0.2138 for 6 seeds"
+looot-ads,Foreplay,"Basic $59 a month, $49 on annual billing",foreplay-pricing-excerpt.txt,"about $0.05 for 5 competitors on 4 platforms"
+looot-reviews,ReviewTrackers,not read (pricing page returned 404),,"at most $0.015 for 5 companies, 2 pages each"
+looot-battlecards,Klue and Crayon,no price on either pricing page,,"about $0.015 per competitor"
+looot-mentions,Brand24 and Mention,"Brand24 Individual $249 a month, $199 on annual billing. Mention: no figure in the page text",brand24-pricing-excerpt.txt,"$0.01001 per keyword on 8 sources"
+looot-warm-leads,Gojiberry,not re-read (pricing URL returned 404),,"at most $0.25 for a small example run"
