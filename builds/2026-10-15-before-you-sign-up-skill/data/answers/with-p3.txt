@@ -1,0 +1,43 @@
+I checked looot's public price catalog for email verification. That's a free read and nothing got charged. The table has 15 endpoints from 13 providers:
+
+| Provider | Endpoint | Price per call | Cost for 200 |
+| --- | --- | --- | --- |
+| dropleads | dropleads-email-verifier | $0.00145 | $0.29 |
+| kittai | kittai-verify-email | $0.0015 | $0.30 |
+| millionverifier | millionverifier-verify | $0.00178 | $0.36 |
+| icypeas | icypeas-email-verify | $0.0019 | $0.38 |
+| bounceban | bounceban-verify | $0.004 | $0.80 |
+| leadmagic | leadmagic-email-verify | $0.00495 | $0.99 |
+| limadata | limadata-api-find-email-verify | $0.006 | $1.20 |
+| scrubby | scrubby-validate | $0.0078 | $1.56 |
+| tomba | tomba-email-verifier | $0.0089 | $1.78 |
+| zerobounce | zerobounce-validate | $0.01 | $2.00 |
+| hunter | hunter-email-verifier | $0.01225 | $2.45 |
+| findymail | findymail-api-verify | $0.0198 | $3.96 |
+| anysite | anysite-api-emails-verify | $0.14388 | $28.78 |
+
+Prices run from $0.00145 to $0.144 per call, about 99x apart. At 200 addresses, though, almost every option costs under $4, so price shouldn't decide this. What matters is how each provider handles catch-all domains, the servers that accept mail for any address. A "valid" from one provider and a "valid" from another don't always mean the same thing.
+
+These are looot's list prices, not the prices on each vendor's own site. You can sign up with a provider directly or go through looot. Several vendors, ZeroBounce for example, have free tiers that might cover 200 addresses at no cost, so check their sites before you pay anyone.
+
+## My pick
+
+I'd use **MillionVerifier** if you only need a yes/no on deliverability. It's cheap and well established.
+
+If a lot of your list is B2B, I'd pick **BounceBan**. Company domains are often catch-all, and BounceBan focuses on resolving those instead of returning "unknown." It costs $0.80 for the whole list.
+
+## Plan
+
+1. **Clean the CSV locally first. This is free.** Trim whitespace, lowercase, drop duplicates and rows that fail basic syntax. Flag role addresses like `info@` and `sales@`. This usually removes 5–15% of a list before you pay for anything.
+2. **Check MX records locally. Also free.** A short Python script using `dnspython` can do a DNS lookup per domain. If a domain has no MX record it can't receive mail, so mark those invalid and skip the paid check.
+3. **Run the survivors through the verifier.** You'd send one API call per address, or use the provider's bulk CSV upload. Both MillionVerifier and BounceBan let you upload a CSV in their web app, so you wouldn't need to write any code for 200 rows.
+4. **Sort the results into four groups:**
+   - `valid`: send.
+   - `invalid`: remove.
+   - `catch-all` / `risky`: send only if you can live with some bounces, or re-check them with BounceBan.
+   - `unknown`: retry once a few hours later, since the receiving server may have been temporarily down or rate-limiting.
+5. **Write an output CSV** with the original columns plus `status`, `reason`, and `checked_at`, so you can filter it in a spreadsheet.
+
+Expect to pay roughly $0.30–$1 in total, and less if steps 1–2 remove addresses.
+
+I haven't signed up for anything or called any paid API. Tell me which provider you want, and whether you're going direct or through looot. I can then write the script for steps 1–2 and 5, which doesn't need an API key.

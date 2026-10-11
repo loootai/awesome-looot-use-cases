@@ -1,0 +1,34 @@
+For 200 addresses I'd use **ZeroBounce**. You upload the CSV, it returns the same file with a status column, and the job costs a few dollars at most. Its catch-all and "unknown" flags are more reliable than the cheapest tools, and that matters if this list is for cold outreach. If price is all you care about, **MillionVerifier** costs less per check and works fine for a one-off batch. Pricing changes often, so check both sites before you buy.
+
+Don't build your own SMTP checker. Gmail and Microsoft 365 often accept every address at the RCPT stage, so the results are noisy. Probing from your own IP can also get it blacklisted.
+
+## Plan
+
+**1. Clean the CSV first** so you don't pay to verify junk.
+- Trim whitespace and lowercase every address.
+- Remove duplicates.
+- Drop rows that obviously fail syntax, like a missing `@` or no domain.
+- Expect 5 to 10% of rows to go here.
+
+**2. Upload and run.**
+- Create an account and upload the CSV through the bulk "Validate file" page. A 200-row file finishes in a few minutes.
+- If you want this repeatable, use their API instead. One call per address, or the batch endpoint.
+
+**3. Read the result statuses.**
+
+| Status | Action |
+|---|---|
+| valid | Send |
+| invalid | Remove |
+| catch-all / accept-all | Send in a small, separate batch, or skip if your sender reputation is new |
+| unknown | Re-verify in 24h, otherwise treat as catch-all |
+| spamtrap / abuse | Remove, no exceptions |
+| do_not_mail (role, disposable, toxic) | Usually remove. Keep role addresses like `info@` only if they're the real target |
+
+**4. Split the output into files.** `send.csv` holds valid addresses. `risky.csv` holds catch-all and unknown. `drop.csv` holds everything else. Keep the original file untouched.
+
+**5. Send, then check.** Keep the hard bounce rate under about 2%. If the valid bucket bounces higher than that, something is off with the source data, not the verifier.
+
+Expect roughly 60 to 75% valid, 10 to 25% catch-all, and the rest invalid or unknown on a typical scraped B2B list. Lists from enrichment tools such as Apollo usually come out cleaner.
+
+If you share the CSV path, I can write the cleanup script for step 1 and the splitter for step 4.

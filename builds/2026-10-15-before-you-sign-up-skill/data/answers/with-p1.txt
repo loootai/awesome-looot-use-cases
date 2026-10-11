@@ -1,0 +1,26 @@
+You need two things: the CTO's name, then an email-finder API that takes a name plus `stripe.com` and returns a verified address.
+
+**1. The name.** A web search or Stripe's site gives you this for free. I'm not confident who holds the role right now. Rahul Patil was CTO until late 2025, when he left for Anthropic, so check before you pay for a lookup. Some endpoints take a LinkedIn profile URL instead of a name, so grab that too.
+
+**2. An email-finder API.** I checked looot's free public catalog. That was one read-only request, and nothing ran or got charged. It lists 23 endpoints from 17 providers for this job:
+
+| Provider | Endpoint | Price per call |
+| --- | --- | --- |
+| anysite | anysite-api-linkedin-user-email (takes a LinkedIn URL) | $0.0036 |
+| kittai | kittai-find-email | $0.005 |
+| tomba | tomba-email-finder | $0.0089 |
+| dropleads | dropleads-email-finder | $0.0145 |
+| leadmagic | leadmagic-people-email-finder | $0.0198 |
+| findymail | findymail-api-search-name | $0.0198 |
+| hunter | hunter-email-finder | $0.0245 |
+| aviato | aviato-person-email | $0.15 |
+| fundable | fundable-person-email | $0.25 |
+
+Prices run from $0.0036 to $0.25 per call, about 70x apart. Cheap doesn't mean the same result, though. Providers differ on input (name and domain vs. LinkedIn URL), on whether they verify the address, and on hit rate for senior people at big companies. For one lookup at Stripe, I'd go with a provider that verifies the address, like Hunter, Findymail or LeadMagic, over the cheapest one.
+
+These are looot's list prices, not the prices on each vendor's own site, and looot marks every row "unverified". You have two ways in:
+
+- **Sign up with one provider directly.** Hunter, Tomba and Findymail all have free tiers that cover one lookup. You get an API key, then make one call with first name, last name and `stripe.com`.
+- **Go through looot.** One account covers all the providers above. Tell me which endpoint id you want, and I'll stop there until you approve any spending.
+
+Whichever way you go, I haven't called any paid tool. Once you have a key, or once you approve a looot endpoint, I can run the lookup.

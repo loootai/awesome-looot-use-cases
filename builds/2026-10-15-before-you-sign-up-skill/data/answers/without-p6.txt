@@ -1,0 +1,26 @@
+For a once-a-day script, I'd start with **Google News RSS**. It needs no key, it's free, and it's current to within minutes:
+
+```
+https://news.google.com/rss/search?q="Acme+Corp"+when:1d&hl=en-US&gl=US&ceid=US:en
+```
+
+`when:1d` limits results to the last 24 hours, and the quotes force an exact-name match. Parse it with `feedparser` in Python or any RSS library, then run it from cron. The catch is that it's unofficial. Google can change it, the ToS doesn't really cover commercial reuse, and the links go through Google redirect URLs.
+
+If you need something official or commercial, here's what I'd pick, in order:
+
+| API | Why | Watch out for |
+|---|---|---|
+| **GNews** (gnews.io) | Simple, cheap, has a free tier (~100 req/day), and supports `from` date filtering | Smaller source pool |
+| **NewsData.io** | Free tier, good international coverage, company/domain filters | Free tier results lag a bit |
+| **Event Registry / NewsAPI.ai** | Matches on entities, so "Apple" the company doesn't pull in fruit stories | Pricier |
+| **Exa or Tavily** | AI-oriented search APIs that return cleaner text, handy if an LLM summarizes the results | You pay per search, and they're built for search rather than news feeds |
+
+Two to avoid:
+- **NewsAPI.org free tier.** It's for development only and articles arrive about 24h late, which doesn't work for "recent".
+- **Bing News Search API.** Microsoft retired it in August 2025.
+
+Pricing and limits are as of mid-2026, so check them before you commit.
+
+If the company name is generic, go with Event Registry, or add a ticker or domain to your query to avoid noise. Otherwise use Google News RSS for a personal script and GNews if it's going into a product.
+
+I can write the script and the daily cron job if you tell me the company and where the results should go (email, Slack, a file).

@@ -1,0 +1,26 @@
+I'd use **Firecrawl**. It renders JavaScript before converting to markdown, which matters because most SaaS pricing pages load their tiers client-side. It also has a `changeTracking` output format that compares each scrape to the last one and tells you whether the page is new, changed, or the same. A morning pricing check is mostly asking "did anything change?", so that feature fits well.
+
+A minimal call looks like this:
+
+```bash
+curl -X POST https://api.firecrawl.dev/v1/scrape \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://competitor.com/pricing", "formats": ["markdown", "changeTracking"]}'
+```
+
+If you want something cheaper and simpler, try **Jina Reader**. You put `https://r.jina.ai/` in front of any URL and get markdown back, with no SDK and almost no setup. It's fine for static pages. It struggles more with heavy JS and bot protection, and it won't diff for you, so you'd have to store yesterday's copy and run `diff` yourself.
+
+For the "every morning" part, there are three options:
+
+- A cron job or a scheduled GitHub Action that loops over your URLs and writes each result to a dated file. If you commit those files to a repo, you get a full price history for free.
+- A Claude Code routine (`/schedule`) that fetches the pages, compares them with yesterday's, and sends you a short summary of what moved. I can set this up if you want a digest rather than raw files.
+- Visualping or Distill.io, if you only want an alert when something changes and don't need the markdown. They're no-code but less flexible.
+
+A few things to know before you start:
+
+- Many pricing pages have a monthly/annual toggle, and the scraper only captures the default view. Firecrawl's `actions` can click the toggle before it scrapes.
+- Some competitors put their pages behind Cloudflare. Firecrawl gets through more often than plain fetchers, but not every time.
+- Small markup changes can show up as false "changed" flags. Diffing the extracted price lines works better than diffing the whole page.
+
+Send me your list of competitor URLs and I can write the script or the routine.

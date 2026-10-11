@@ -1,0 +1,48 @@
+I'd sign up for **Serper.dev**. At your volume it's probably free.
+
+**Why not Google's own API.** Google closed the Custom Search JSON API to new customers in 2025 and plans to shut it down for everyone on January 1, 2027. Even before that it was a weak fit. It searches a "Programmable Search Engine" you configure, so results don't always match what google.com shows, and the free tier is capped at 100 queries a day.
+
+**Third-party SERP APIs.** These scrape real Google results and return JSON:
+
+| API | Free tier | Paid | Notes |
+|---|---|---|---|
+| Serper.dev | ~2,500 queries on signup | about $1 per 1k queries | Cheapest and simplest. Covers 50 keywords many times over. |
+| SerpApi | ~100 searches/month | from ~$75/month | Most polished. Parses lots of SERP features (ads, maps, shopping, People Also Ask) and has an official Python library. |
+| DataForSEO | small trial credit | pay as you go, fractions of a cent per query | Best if this becomes bulk SEO work: thousands of keywords, rank tracking, search volume. |
+
+I'm quoting those prices from memory, so check each pricing page before you commit.
+
+**What to pick:**
+- For a one-off or occasional run of 50 keywords, use Serper.
+- If you need structured data on rich SERP features, use SerpApi.
+- If this grows into ongoing SEO tracking at scale, use DataForSEO.
+
+A minimal Serper script:
+
+```python
+import os, json, requests
+
+API_KEY = os.environ["SERPER_API_KEY"]
+keywords = ["keyword one", "keyword two"]  # your 50 here
+
+results = {}
+for kw in keywords:
+    r = requests.post(
+        "https://google.serper.dev/search",
+        headers={"X-API-KEY": API_KEY, "Content-Type": "application/json"},
+        json={"q": kw, "gl": "us", "hl": "en", "num": 10},
+        timeout=30,
+    )
+    r.raise_for_status()
+    results[kw] = [
+        {"position": o.get("position"), "title": o["title"], "link": o["link"]}
+        for o in r.json().get("organic", [])
+    ]
+
+with open("serp_results.json", "w") as f:
+    json.dump(results, f, indent=2)
+```
+
+Set `gl` (country) and `hl` (language) to the market you care about, because results change a lot by location.
+
+Don't scrape google.com yourself with requests or Selenium. You'll hit CAPTCHAs within a few dozen queries, and it violates Google's terms. Handling that is the whole reason these APIs exist.

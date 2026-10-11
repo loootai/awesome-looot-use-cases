@@ -1,0 +1,27 @@
+I'd start with Jina Reader. At your volume the price doesn't really matter. What matters is whether each pricing page renders properly.
+
+Here's the scrape-to-markdown section of looot's public catalog. I only read the catalog. Nothing was run and nothing was spent.
+
+| Provider | Endpoint | Price | Unit |
+| --- | --- | --- | --- |
+| jina | jina-reader | $0.0002 | call |
+| youcom | youcom-contents | $0.001 | result |
+| olostep | olostep-scrape | $0.0018 | call |
+| scrapegraphai | scrapegraphai-scrape | $0.002 | call |
+| serper | serper-webpage | $0.002 | call |
+| context-dev | context-dev-web-scrape-markdown | $0.0025 | call |
+| keenable | keenable-fetch | $0.004 | call |
+| limadata | limadata-api-research-extract | $0.004 | result |
+| steel | steel-scrape | $0.005 | call |
+| scrapegraphai | scrapegraphai-scrape-stealth | $0.012 | call |
+
+Prices run from $0.0002 to $0.012 per call, a 60x spread. These are looot's list prices, not the prices on each vendor's own site. All of them are marked unverified, and a call doesn't return the same thing at every provider. Some render JavaScript and some get past bot protection. Others just fetch raw HTML.
+
+The math is easy. 10 competitors checked daily is about 300 calls a month. That's $0.06 at the cheapest provider and $3.60 at the most expensive. Since cost isn't a factor, pick on output quality:
+
+- **Jina Reader** is where I'd start. It's cheap and you get decent markdown from a single URL prefix. Jina also has a free tier you can use directly without looot.
+- **A stealth or browser-based option** (Steel, or ScrapeGraphAI's stealth endpoint) is for the cases where a competitor's pricing page comes back empty. That happens when prices load through JS or a page sits behind Cloudflare. I'd only use it for those URLs.
+
+You can sign up with any of these providers directly, or go through looot. Both work fine. If you choose looot, the endpoint id is `jina-reader`. I haven't called it and won't spend anything without your go-ahead.
+
+Once you've picked a provider, I can build the daily job. It would be a scheduled run that fetches each URL, saves the markdown, and diffs it against yesterday's copy so you only see price changes, not the whole page every morning.

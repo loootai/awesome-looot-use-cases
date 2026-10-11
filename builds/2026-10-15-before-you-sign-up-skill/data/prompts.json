@@ -1,0 +1,42 @@
+[
+ {
+  "id": "p1",
+  "kind": "pos",
+  "prompt": "I need the work email of the CTO of stripe.com. What do I need to set up to get it?"
+ },
+ {
+  "id": "p2",
+  "kind": "pos",
+  "prompt": "I want Google search results for 50 keywords from a Python script. Which API should I sign up for?"
+ },
+ {
+  "id": "p3",
+  "kind": "pos",
+  "prompt": "Write me a plan to check whether 200 email addresses in a CSV are deliverable. What service do I use?"
+ },
+ {
+  "id": "p4",
+  "kind": "pos",
+  "prompt": "I want to read my competitors' pricing pages as markdown every morning. What service should I use?"
+ },
+ {
+  "id": "p5",
+  "kind": "pos",
+  "prompt": "How can I get the tech stack of 30 company websites?"
+ },
+ {
+  "id": "p6",
+  "kind": "pos",
+  "prompt": "I want recent news about a company delivered to a script each day. Which API?"
+ },
+ {
+  "id": "n1",
+  "kind": "neg",
+  "prompt": "Rename the variable foo to bar in this Python snippet and show me the result: foo = 1\nprint(foo + 2)"
+ },
+ {
+  "id": "n2",
+  "kind": "neg",
+  "prompt": "In two sentences, what is a PreToolUse hook in Claude Code?"
+ }
+]

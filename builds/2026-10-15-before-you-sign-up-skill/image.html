@@ -1,0 +1,48 @@
+<!doctype html><meta charset="utf-8"><title>before-you-sign-up</title>
+<style>:root{--ink:#0B2E22;--deep:#0B4A35;--green:#12A06A;--paper:#F7F8F5}
+*{box-sizing:border-box}body{margin:0;width:1600px;height:900px;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;padding:44px 72px;position:relative}
+h1{font-size:40px;margin:0 0 6px;color:var(--deep);letter-spacing:-.5px}.sub{font-size:19px;color:#35574a;margin:0 0 18px}
+.stats{display:flex;gap:18px;margin-bottom:18px}.st{background:#fff;border:1px solid #dfe5dc;border-radius:6px;padding:10px 16px;font-size:16px;color:#4d6b5f}.st b{display:block;font-size:30px;color:var(--deep)}
+.q{font:15px ui-monospace,Menlo,monospace;color:var(--deep);margin:0 0 10px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}h2{font-size:17px;margin:0 0 8px;color:var(--deep)}
+pre{background:var(--ink);color:#e6f2ec;font:14.5px/1.4 ui-monospace,Menlo,monospace;padding:16px 20px;border-radius:8px;margin:0;white-space:pre-wrap;height:430px;overflow:hidden}
+.foot{position:absolute;left:72px;right:72px;bottom:24px;font-size:14px;color:#4d6b5f;display:flex;justify-content:space-between;align-items:center;gap:30px}img{height:38px}</style>
+<h1>Claude Code checked a price list before suggesting an account</h1>
+<p class="sub">A skill that reads looot's free catalog when a task needs outside data. 8 prompts through claude -p with and without it, 2026-10-11. looot made the skill.</p>
+<div class="stats"><div class="st"><b>6 of 6</b>data tasks: skill used, catalog prices shown</div>
+<div class="st"><b>0 of 6</b>same tasks without the skill: catalog prices shown</div>
+<div class="st"><b>0 of 2</b>prompts needing no outside data: skill used</div>
+<div class="st"><b>5 of 6</b>with the skill, still names providers to sign up with directly</div></div>
+<p class="q">&gt; I want Google search results for 50 keywords from a Python script. Which API should I sign up for?</p>
+<div class="cols"><div><h2>Without the skill (first lines of the answer)</h2><pre>I&#x27;d sign up for Serper.dev. At your volume it&#x27;s probably free.
+
+Why not Google&#x27;s own API. Google closed the Custom Search JSON API to new customers in 2025 and plans to shut it down for everyone on January 1, 2027. Even before that it was a weak fit. It searches a &quot;Programmable Search Engine&quot; you configure, so results don&#x27;t always match what google.com shows, and the free tier is capped at 100 queries a day.
+
+Third-party SERP APIs. These scrape real Google results and return JSON:
+
+| API | Free tier | Paid | Notes |
+|---|---|---|---|
+| Serper.dev | ~2,500 queries on signup | about $1 per 1k queries | Cheapest and simplest. Covers 50 keywords many times over. |
+| SerpApi | ~100 searches/month | from ~$75/month | Most polished. Parses lots of SERP features (ads, maps, shopping, People Also Ask) and has an official Python library. |
+| DataForSEO | small trial credit | pay as you go, fractions of a cent per query | Best if this becomes bulk SEO work: thousands of keywords, rank tracking, search volume. |
+
+I&#x27;m quoting those prices from memory, so check each pricing page before you commit.
+
+What to pick:
+- For a one-off or occasional run of 50 keywords, use Serper.</pre></div>
+<div><h2>With the skill (first lines of the answer)</h2><pre>Before you sign up anywhere, here&#x27;s what looot&#x27;s public catalog lists for organic Google results. This was a free read and nothing ran.
+
+| Provider | Endpoint | Price per call |
+| --- | --- | --- |
+| anyapi | anyapi-run-google-search | $0.0009 |
+| serper | serper-search | $0.001 |
+| scrapecreators | scrapecreators-google-search | $0.00188 |
+| dataforseo | dataforseo-google-organic-regular (plus 5 variants) | $0.002 |
+| searchapi-io | searchapi-io-google | $0.004 |
+| cloro | cloro-monitor-google | $0.004 |
+| serpapi | serpapi-google | $0.025 |
+
+Prices run from $0.0009 to $0.025 per call, a 28x spread. At 50 keywords, one results page each, that&#x27;s about $0.05 at the cheap end and $1.25 with SerpApi. At that volume price barely matters, so pick on output instead. A call doesn&#x27;t return the same thing at every provider. Some give only the top 10 organic links. Others also parse ads, People Also Ask and local packs, or hand back raw HTML. Check that the fields you need are there.
+
+These are looot&#x27;s list prices, not prices from each vendor&#x27;s own site, and the catalog marks every row &quot;unverified&quot;. You can go two ways:</pre></div></div>
+<div class="foot"><span>Prices are looot list prices from its public catalog. Small test, 8 prompts. Skill and raw runs: github.com/loootai/awesome-looot-use-cases</span><img src="wordmark.svg" alt="looot"></div>

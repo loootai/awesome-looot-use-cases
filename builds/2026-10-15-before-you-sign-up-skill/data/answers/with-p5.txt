@@ -1,0 +1,18 @@
+I checked looot's public catalog. It was a single read, so nothing ran and nothing was charged.
+
+| Provider | Endpoint | Price | Unit | Cost for 30 sites |
+| --- | --- | --- | --- | --- |
+| builtwith | builtwith-free1-api-json | $0 | call | $0 |
+| tomba | tomba-technology | $0.0089 | call | ~$0.27 |
+| predictleads | predictleads-companies-technology-detections | $0.01 | call | ~$0.30 |
+| sumble | sumble-organizations-techs | $0.01 | result | depends on result count |
+| builtwith | builtwith-api-json | $0.0495 | call | ~$1.49 |
+| theirstack | theirstack-companies-technologies | $0.0981 | call | ~$2.94 |
+
+Paid calls run from under a cent (tomba) to about 10 cents (theirstack), so 30 sites costs between nothing and about $3. Price isn't the main difference between them, though. BuiltWith's free tier returns only technology categories, not the actual tool names. The full BuiltWith endpoint returns specific technologies with first-seen and last-seen dates. TheirStack and Sumble work out the stack partly from job postings, which catches backend tools that never show up in a site's HTML. For a GTM list, pick the provider whose data fits what you plan to do with it, not the cheapest one.
+
+These prices come from looot's catalog, and every row is marked unverified. They're looot's list prices, so they may not match each vendor's own pricing page. You can sign up with any of these providers directly, or go through looot. Both work.
+
+You may not need an API at all. At 30 sites, an open-source detector run locally is free and finishes in about a minute. Examples are `httpx -tech-detect` from ProjectDiscovery or `webanalyze`, which uses the Wappalyzer fingerprints. Both only see what the public pages expose: frontend frameworks, CMS, analytics, chat widgets, CDN. They won't find your prospects' CRM or data warehouse.
+
+Tell me which way you want to go. If it's looot, give me the endpoint id and I'll stop there so you can approve the spend. If it's the local tool, send me the 30 domains and I'll run it.

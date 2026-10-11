@@ -1,0 +1,288 @@
+[
+ {
+  "id": "n1",
+  "kind": "neg",
+  "cond": "with",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.09460180000000001,
+  "duration_ms": 2078,
+  "words": 16
+ },
+ {
+  "id": "n2",
+  "kind": "neg",
+  "cond": "with",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.0969898,
+  "duration_ms": 2996,
+  "words": 79
+ },
+ {
+  "id": "p1",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [
+   "findymail",
+   "hunter",
+   "tomba"
+  ],
+  "tools_denied": 0,
+  "turns": 5,
+  "claude_cost_usd": 0.17988020000000005,
+  "duration_ms": 24383,
+  "words": 374
+ },
+ {
+  "id": "p2",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [
+   "dataforseo",
+   "serpapi",
+   "serper"
+  ],
+  "tools_denied": 0,
+  "turns": 4,
+  "claude_cost_usd": 0.1494584,
+  "duration_ms": 15125,
+  "words": 287
+ },
+ {
+  "id": "p3",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [
+   "findymail",
+   "hunter",
+   "tomba",
+   "zerobounce"
+  ],
+  "tools_denied": 0,
+  "turns": 4,
+  "claude_cost_usd": 0.1531422,
+  "duration_ms": 24175,
+  "words": 578
+ },
+ {
+  "id": "p4",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [
+   "jina",
+   "serper"
+  ],
+  "tools_denied": 0,
+  "turns": 5,
+  "claude_cost_usd": 0.164985,
+  "duration_ms": 20216,
+  "words": 393
+ },
+ {
+  "id": "p5",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [
+   "builtwith",
+   "tomba",
+   "wappalyzer"
+  ],
+  "tools_denied": 0,
+  "turns": 4,
+  "claude_cost_usd": 0.13496780000000003,
+  "duration_ms": 19992,
+  "words": 352
+ },
+ {
+  "id": "p6",
+  "kind": "pos",
+  "cond": "with",
+  "skill_called": true,
+  "script_ran": true,
+  "prices_shown": true,
+  "looot_named": true,
+  "names_vendors": [],
+  "tools_denied": 0,
+  "turns": 4,
+  "claude_cost_usd": 0.138668,
+  "duration_ms": 18218,
+  "words": 345
+ },
+ {
+  "id": "n1",
+  "kind": "neg",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.0936018,
+  "duration_ms": 2131,
+  "words": 12
+ },
+ {
+  "id": "n2",
+  "kind": "neg",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.09582979999999999,
+  "duration_ms": 3579,
+  "words": 80
+ },
+ {
+  "id": "p1",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "apollo",
+   "findymail",
+   "hunter",
+   "neverbounce",
+   "prospeo",
+   "zerobounce"
+  ],
+  "tools_denied": 0,
+  "turns": 4,
+  "claude_cost_usd": 0.1624742,
+  "duration_ms": 22646,
+  "words": 332
+ },
+ {
+  "id": "p2",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "dataforseo",
+   "serpapi",
+   "serper"
+  ],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.1304488,
+  "duration_ms": 12474,
+  "words": 357
+ },
+ {
+  "id": "p3",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "apollo",
+   "zerobounce"
+  ],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.1325748,
+  "duration_ms": 15892,
+  "words": 393
+ },
+ {
+  "id": "p4",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "firecrawl",
+   "jina"
+  ],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.1133818,
+  "duration_ms": 13806,
+  "words": 350
+ },
+ {
+  "id": "p5",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "builtwith",
+   "wappalyzer"
+  ],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.11577380000000001,
+  "duration_ms": 13667,
+  "words": 274
+ },
+ {
+  "id": "p6",
+  "kind": "pos",
+  "cond": "without",
+  "skill_called": false,
+  "script_ran": false,
+  "prices_shown": false,
+  "looot_named": false,
+  "names_vendors": [
+   "bing",
+   "exa",
+   "gnews",
+   "newsapi",
+   "tavily"
+  ],
+  "tools_denied": 0,
+  "turns": 1,
+  "claude_cost_usd": 0.1151858,
+  "duration_ms": 13722,
+  "words": 309
+ }
+]

@@ -1,0 +1,20 @@
+Before you sign up anywhere, here's what looot's public catalog lists for organic Google results. This was a free read and nothing ran.
+
+| Provider | Endpoint | Price per call |
+| --- | --- | --- |
+| anyapi | anyapi-run-google-search | $0.0009 |
+| serper | serper-search | $0.001 |
+| scrapecreators | scrapecreators-google-search | $0.00188 |
+| dataforseo | dataforseo-google-organic-regular (plus 5 variants) | $0.002 |
+| searchapi-io | searchapi-io-google | $0.004 |
+| cloro | cloro-monitor-google | $0.004 |
+| serpapi | serpapi-google | $0.025 |
+
+Prices run from $0.0009 to $0.025 per call, a 28x spread. At 50 keywords, one results page each, that's about $0.05 at the cheap end and $1.25 with SerpApi. At that volume price barely matters, so pick on output instead. A call doesn't return the same thing at every provider. Some give only the top 10 organic links. Others also parse ads, People Also Ask and local packs, or hand back raw HTML. Check that the fields you need are there.
+
+These are looot's list prices, not prices from each vendor's own site, and the catalog marks every row "unverified". You can go two ways:
+
+- **Sign up with a provider directly.** For a Python script, Serper and SerpApi are the usual picks. Both return clean JSON and have simple docs. From memory, both have offered a free tier or signup credits that would cover 50 queries, but check their current pricing pages because I didn't look them up.
+- **Go through looot.** One key covers all these providers. The cheapest organic endpoint is `anyapi-run-google-search`, and `serper-search` is next.
+
+I haven't called any provider or spent anything. Once you pick one, I can write the script.

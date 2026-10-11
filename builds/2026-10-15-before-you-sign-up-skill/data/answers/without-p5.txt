@@ -1,0 +1,30 @@
+For 30 sites, I'd use ProjectDiscovery's `httpx` with tech detection. It's free, takes about a minute, and uses the Wappalyzer fingerprint database under the hood.
+
+**1. Free CLI with httpx (my pick)**
+
+```bash
+# install a pinned release, not @latest
+go install github.com/projectdiscovery/httpx/cmd/httpx@v1.6.10
+
+# domains.txt has one domain per line
+httpx -l domains.txt -td -title -status-code -json -o stack.jsonl
+```
+
+Each line of `stack.jsonl` has a `tech` array with entries like `["Next.js", "Vercel", "HubSpot", "Cloudflare"]`. Use `jq` to turn it into a CSV:
+
+```bash
+jq -r '[.input, (.tech // [] | join("; "))] | @csv' stack.jsonl > stack.csv
+```
+
+**2. Paid APIs**
+
+- BuiltWith has bulk lookup and historical data, so you can see when a company added or dropped a tool. It's useful for GTM because it also catches marketing pixels and some backend signals. It's not cheap.
+- Wappalyzer's bulk CSV upload accepts a domain list and returns a spreadsheet. Same fingerprints as httpx, plus contact and company data on higher plans.
+
+**3. Browser extension**
+
+You can visit each site with the Wappalyzer or BuiltWith extension installed. For 30 sites that's tedious, but it works if you only need a quick look.
+
+**Limits of all of these.** They only see what the site exposes: headers, HTML, JS bundles, cookies, DNS. Your results will have the frontend framework, CDN, CMS, analytics, chat widgets and ad pixels. The backend language, database and internal tools mostly won't show up. Sites behind Cloudflare bot protection sometimes return a challenge page and come back with almost nothing detected.
+
+If you paste the 30 domains here, I can run the httpx route and give you back a CSV.

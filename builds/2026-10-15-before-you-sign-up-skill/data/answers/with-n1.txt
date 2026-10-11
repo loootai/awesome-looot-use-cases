@@ -1,0 +1,6 @@
+```python
+bar = 1
+print(bar + 2)
+```
+
+It prints `3`, same as before the rename.

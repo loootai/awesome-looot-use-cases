@@ -1,0 +1,19 @@
+Nothing is set up here yet. The project's `.claude/skills` folder is empty, and I don't have any email-finder API connected. To get this you need two things.
+
+**1. A way to confirm who the CTO is right now.** Stripe's CTO has changed a few times recently. Rahul Patil held the role and then left for Anthropic in late 2025, and I don't know for certain who has it today. I can check with web search, which is already available, so you don't need to set anything up for this part.
+
+**2. An email-finder API key.** Pick one of these:
+
+- Hunter.io. Its Email Finder endpoint takes a domain plus first and last name and returns the email with a confidence score. The free tier gives 25 searches a month.
+- Apollo.io. Its people match endpoint works from a name and company and also returns the title, which helps confirm the person is still the CTO.
+- Prospeo or Findymail. Both are tuned for verified B2B emails and usually do better on large company domains.
+
+Once you have a key, export it in your shell, for example `export HUNTER_API_KEY=...`. Or put it in `.claude/settings.local.json` under `env` so I can read it. I'll call the API with curl.
+
+**Optional but worth it: a verifier.** NeverBounce, ZeroBounce or MillionVerifier will check the result. Big domains like stripe.com are often "accept-all," which means the mail server accepts any address and verification can't prove the mailbox exists. In that case you get a likely pattern, such as `firstname at stripe.com`, with a confidence score, not a confirmed address.
+
+With the key in place, the flow is: I look up the current CTO, call the finder with their name and `stripe.com`, then verify the result. That's about three calls.
+
+A cold email to a named exec counts as B2B outreach under GDPR and CAN-SPAM. Include an opt-out and a legitimate business reason.
+
+Which provider do you want to use? Once the key is set, I'll run the lookup.

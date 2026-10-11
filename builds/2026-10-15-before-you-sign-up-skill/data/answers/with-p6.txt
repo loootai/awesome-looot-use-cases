@@ -1,0 +1,20 @@
+I checked looot's public catalog. It was a free read and nothing got run. These are the endpoints that best match "company news":
+
+| Provider | Endpoint | Price | Unit |
+| --- | --- | --- | --- |
+| eodhd | eodhd-news | $0.000033 | call |
+| context-dev | context-dev-news-search | $0.00025 | result |
+| akta | akta-news | $0.0005 | result |
+| predictleads | predictleads-companies-news-events | $0.01 | call |
+
+Prices run from $0.000033 to $0.01 per call, a 300x spread. The prices aren't comparable like for like, because each provider returns something different for a call. Two units are also "per result", not per call. EODHD is financial news looked up by stock ticker, so it suits public companies. PredictLeads returns structured events like funding, hiring and new offices, and it covers private companies too. The two search endpoints are plain article search by keyword. The catalog also lists general `news_search` endpoints at $0.002 to $0.036 per call. All of these are looot's list prices, not the prices on each vendor's own site, and the catalog marks every one as unverified.
+
+You're making one call a day, so cost barely matters here. Even the most expensive option is about $3.65 a year. What matters is the kind of company:
+
+- **Public company:** EODHD by ticker. It's the cheapest and the results are tied to the company.
+- **Private company or startup:** PredictLeads. Structured events are easier to work with in a script than raw headlines.
+- **Just the headlines:** Google News RSS (`https://news.google.com/rss/search?q="Company+Name"&when:1d`). It's free and needs no key or account. Its downside is that it isn't an official API and it can change without warning.
+
+You can sign up with any of these vendors yourself, or go through looot. Either way works. If you choose looot, give me the endpoint id from the table and I'll stop there. I won't call anything paid until you say so.
+
+Which kind of company is it? Once I know, I can write the daily script with a cron entry.
